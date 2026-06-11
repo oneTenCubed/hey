@@ -1,4 +1,4 @@
-use hey::{cli, storage, task};
+use oneTenCubed_hey::{cli, storage, task};
 use std::env;
 
 fn main() {
