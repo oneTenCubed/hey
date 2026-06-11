@@ -9,3 +9,7 @@ repository = "https://github.com/oneTenCubed/hey"
 license = "MIT"
 
 [dependencies]
+
+[[bin]]
+name = "hey"
+path = "src/main.rs"
