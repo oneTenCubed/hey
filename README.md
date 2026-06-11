@@ -63,7 +63,9 @@ Notes are stored locally under:
 ~/.local/share/hey
 ```
 
-Current versions store notes directly within hey-managed storage.
+Current versions store notes directly within hey-managed storage. [^*]
+
+[^*]: hey currently targets Linux systems and follows common Unix conventions.
 
 ## Roadmap
 
