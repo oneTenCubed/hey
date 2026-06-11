@@ -1,0 +1,11 @@
+[package]
+name = "oneTenCubed-hey"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.95"
+description = "keyword-based note retrieval tool"
+readme = "README.md"
+repository = "https://github.com/oneTenCubed/hey"
+license = "MIT"
+
+[dependencies]
