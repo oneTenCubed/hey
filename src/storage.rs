@@ -1,6 +1,6 @@
 use std::{
     env,
-    fs::DirBuilder,
+    fs::{self, DirBuilder},
     io::{self, Write},
     path::Path,
     process,
@@ -97,9 +97,13 @@ pub fn cat_article(title: String) {
     };
     let path_to_file = format!("{}/.local/share/hey/notes/{}", home_dir.display(), title);
 
-    println!("");
-    let _cmnd = process::Command::new("cat")
-        .arg(path_to_file)
-        .status()
-        .expect("Couldn't read article.");
+    let file_content = fs::read_to_string(path_to_file);
+    match file_content {
+        Ok(s) => {
+            println!("\n{}", s);
+        }
+        Err(_) => {
+            println!("Couldn't read file contents");
+        }
+    }
 }
