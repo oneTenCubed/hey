@@ -16,7 +16,7 @@ hey aims to reduce this friction by making notes retrievable through keyword-bas
 ## Philosophy
 
 * Local-first
-* Plain text files
+* Plain text files[^1]
 * Human-readable storage
 * Unix-inspired workflow
 * No AI or machine learning
@@ -24,12 +24,18 @@ hey aims to reduce this friction by making notes retrievable through keyword-bas
 * Simple and composable
 
 The original note files remain accessible without hey.
-
+[^1]:Although not guaranteed, should work with any regular(-) file
 ## Current Features
 
 ### Note Creation
 
-Create a new note by providing a title.
+Run this command to add a note:
+
+```bash
+hey .
+```
+
+Create a new note by providing a title with matching keywords.
 
 The title acts as a collection of search keywords that can later be used to retrieve the note.
 
@@ -44,7 +50,8 @@ If neither is set, a fallback editor is used.
 
 ### Keyword Search
 
-Search for notes using one or more keywords.
+Search for notes using one or more keywords.[^2]
+[^2]:Current system expects exact keyword matches. As such "word" and "words" don't match. Case-insensitive.
 
 Results are ranked according to title matches.
 
@@ -63,23 +70,20 @@ Notes are stored locally under:
 ~/.local/share/hey
 ```
 
-Current versions store notes directly within hey-managed storage. [^*]
-
-[^*]: hey currently targets Linux systems and follows common Unix conventions.
+Current versions store notes directly within hey-managed storage. [^3]
+[^3]: hey currently targets Linux systems and follows common Unix conventions. As such, the program should work on most Linux based systems and Unix like systems. The latter is untested.
 
 ## Roadmap
 
 ### Planned
 
 * Note preview during search
-* Improved search result interaction
 * Linking external notes through symbolic links
 * Importing existing notes into hey
 
 ### Possible Future Improvements
 
 * Better note organization
-* Additional retrieval workflows
 * Performance improvements where justified by real usage
 
 ## Non-Goals
@@ -99,7 +103,7 @@ cargo install oneTenCubed-hey
 
 ## Project Status
 
-Current version: 0.1.0
+Current version: 0.2.0
 
 hey is a personal project built as part of learning Rust, systems programming, and software architecture.
 

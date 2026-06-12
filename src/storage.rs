@@ -68,3 +68,38 @@ pub fn new_article(title: String) {
             .expect("Couldn't open editor.");
     }
 }
+
+pub fn open_editor(title: String) {
+    let editor = env::var("VISUAL")
+        .or_else(|_| env::var("EDITOR"))
+        .unwrap_or_else(|_| "vi".to_string());
+
+    let home_dir = match env::home_dir() {
+        Some(path) => path,
+        None => {
+            panic!("Unable to read path to home directory");
+        }
+    };
+    let path_to_file = format!("{}/.local/share/hey/notes/{}", home_dir.display(), title);
+
+    let _cmnd = process::Command::new(editor)
+        .arg(path_to_file)
+        .status()
+        .expect("Couldn't open editor.");
+}
+
+pub fn cat_article(title: String) {
+    let home_dir = match env::home_dir() {
+        Some(path) => path,
+        None => {
+            panic!("Unable to read path to home directory");
+        }
+    };
+    let path_to_file = format!("{}/.local/share/hey/notes/{}", home_dir.display(), title);
+
+    println!("");
+    let _cmnd = process::Command::new("cat")
+        .arg(path_to_file)
+        .status()
+        .expect("Couldn't read article.");
+}

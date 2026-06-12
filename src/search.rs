@@ -1,13 +1,15 @@
+use crate::cli;
 use std::{env, process};
 
-#[derive(Clone)]
-struct Field {
-    matches: i32,
-    file: String,
+#[derive(Debug, Clone)]
+pub struct Field {
+    pub matches: i32,
+    pub file: String,
 }
 
 pub fn search(s: String) {
-    let search_tokens: Vec<&str> = s.split(' ').collect();
+    let binding = s.to_lowercase();
+    let search_tokens: Vec<&str> = binding.split(' ').collect();
 
     let search_field = get_note_titles();
     let search_field = match String::from_utf8(search_field) {
@@ -19,7 +21,7 @@ pub fn search(s: String) {
     let mut result: Vec<Field> = Vec::new();
 
     for title in titles {
-        let title_tokens: Vec<&str> = title.split('_').collect();
+        let title_tokens: Vec<&str> = title.split(' ').collect();
         let mut count = 0;
 
         for title_token in &title_tokens {
@@ -48,13 +50,16 @@ pub fn search(s: String) {
         }
     }
 
+    let mut search_results = Vec::new();
     for item in result {
         if item.matches != 0 {
-            println!("{}", item.file);
+            search_results.push(item);
         } else {
             break;
         }
     }
+
+    cli::search_result(search_results);
 }
 
 pub fn get_note_titles() -> Vec<u8> {

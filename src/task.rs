@@ -4,6 +4,8 @@ use crate::{cli, search, storage};
 pub enum Command {
     Search,
     New,
+    Editor,
+    Cat,
 }
 
 #[derive(Clone, Debug)]
@@ -30,6 +32,18 @@ pub fn do_task(task: Result<Task, ()>) {
         Command::Search => match task.input {
             Some(s) => {
                 search::search(s);
+            }
+            None => (),
+        },
+        Command::Editor => match task.input {
+            Some(s) => {
+                storage::open_editor(s);
+            }
+            None => (),
+        },
+        Command::Cat => match task.input {
+            Some(s) => {
+                storage::cat_article(s);
             }
             None => (),
         },
