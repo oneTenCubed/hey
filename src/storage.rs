@@ -66,10 +66,11 @@ pub fn new_article(title: String) {
             .arg(path_to_file)
             .status()
             .expect("Couldn't open editor.");
-    }
+    } // same as open_editor(), merge and refactor :: TODO!
 }
 
 pub fn open_editor(title: String) {
+    // TODO!! ^^^ merge and refactor
     let editor = env::var("VISUAL")
         .or_else(|_| env::var("EDITOR"))
         .unwrap_or_else(|_| "vi".to_string());
@@ -88,24 +89,50 @@ pub fn open_editor(title: String) {
         .expect("Couldn't open editor.");
 }
 
-pub fn get_note_titles() -> Vec<u8> {
+pub fn get_note_titles() -> Vec<String> {
     let home_dir = match env::home_dir() {
         Some(path) => path,
         None => {
             panic!("Unable to read path to home directory");
         }
     };
-    let path_to_notes = format!("{}/.local/share/hey/notes/", home_dir.display());
+    let path_to_notes = home_dir.join(".local/share/hey/notes/");
 
-    let cmnd = process::Command::new("ls")
-        .arg(path_to_notes)
-        .output()
-        .expect("Couldn't find notes directory");
+    let mut titles: Vec<String> = Vec::new();
 
-    cmnd.stdout
+    for entry in match fs::read_dir(&path_to_notes) {
+        Ok(entry) => entry,
+        _ => {
+            println!("Unexpected error occurred!");
+            // TODO: handle errors such as permission denied or broken symlinks
+            return Vec::new();
+        }
+    } {
+        let entry = match entry {
+            Ok(entry) => entry,
+            _ => {
+                println!("Unexpected error occurred!");
+                return Vec::new();
+            }
+        };
+
+        let binding = entry.path();
+        let entry = binding.file_name();
+        let entry = match entry {
+            Some(entry) => match entry.to_str() {
+                Some(entry) => entry,
+                _ => continue,
+            },
+            _ => continue,
+        };
+
+        titles.push(entry.to_string());
+    }
+
+    titles
 }
 
-pub fn cat_article(title: String) {
+pub fn read_article(title: String) {
     let home_dir = match env::home_dir() {
         Some(path) => path,
         None => {
@@ -124,3 +151,6 @@ pub fn cat_article(title: String) {
         }
     }
 }
+
+// !!!TODO
+// home_dir, path_to_file repeated nearly everywhere. refactor and introduce helper functions

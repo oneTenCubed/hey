@@ -62,8 +62,6 @@ fn get_title() -> String {
 
     let title: String = title.trim().parse().unwrap();
     let title: String = title.to_lowercase();
-    let title: Vec<&str> = title.split(' ').collect();
-    let title = title.join(" ");
 
     title
 }
@@ -104,7 +102,7 @@ pub fn search_result(result_arr: Vec<search::Field>) {
     io::stdin().read_line(&mut input).expect("Error reading!");
 
     match input.trim() {
-        "r" | "R" | "" => storage::cat_article(title),
+        "r" | "R" | "" => storage::read_article(title),
         "w" | "W" => storage::open_editor(title),
         _ => println!("Invalid input!"),
     }

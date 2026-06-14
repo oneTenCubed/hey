@@ -10,13 +10,7 @@ pub fn search(s: String) {
     let binding = s.to_lowercase();
     let search_tokens: Vec<&str> = binding.split(' ').collect();
 
-    let search_field = storage::get_note_titles();
-    let search_field = match String::from_utf8(search_field) {
-        Ok(val) => val.trim().to_string(),
-        _ => String::new(),
-    };
-
-    let titles: Vec<&str> = search_field.split("\n").collect();
+    let titles: Vec<String> = storage::get_note_titles();
     let mut result: Vec<Field> = Vec::new();
 
     for title in titles {
@@ -33,7 +27,7 @@ pub fn search(s: String) {
 
         result.push(Field {
             matches: count,
-            file: title.to_string(),
+            file: title,
         });
     }
 
