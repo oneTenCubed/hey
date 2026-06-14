@@ -1,7 +1,6 @@
-use crate::cli;
-use std::{env, process};
+use crate::{cli, storage};
 
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct Field {
     pub matches: i32,
     pub file: String,
@@ -11,7 +10,7 @@ pub fn search(s: String) {
     let binding = s.to_lowercase();
     let search_tokens: Vec<&str> = binding.split(' ').collect();
 
-    let search_field = get_note_titles();
+    let search_field = storage::get_note_titles();
     let search_field = match String::from_utf8(search_field) {
         Ok(val) => val.trim().to_string(),
         _ => String::new(),
@@ -60,21 +59,4 @@ pub fn search(s: String) {
     }
 
     cli::search_result(search_results);
-}
-
-pub fn get_note_titles() -> Vec<u8> {
-    let home_dir = match env::home_dir() {
-        Some(path) => path,
-        None => {
-            panic!("Unable to read path to home directory");
-        }
-    };
-    let path_to_notes = format!("{}/.local/share/hey/notes/", home_dir.display());
-
-    let cmnd = process::Command::new("ls")
-        .arg(path_to_notes)
-        .output()
-        .expect("Couldn't find notes directory");
-
-    cmnd.stdout
 }

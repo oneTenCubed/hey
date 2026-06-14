@@ -1,29 +1,65 @@
-use crate::{search, task};
-use std::io::{self, Write};
+use crate::{search, storage};
+use std::{
+    env,
+    io::{self, Write},
+};
 
-pub fn parse_args(args: &Vec<String>) -> Result<task::Task, ()> {
-    let task: task::Task;
+pub fn dispatcher() {
+    let args: Vec<String> = env::args().collect();
+
+    let _invoke = &args[0];
+    // Maybe needed in the future, like warnings for using deprecated invoke commands
 
     if args.len() < 2 {
-        return Err(());
+        println!("print --help details"); // TODO
+        return;
     }
+    let args: Vec<String> = args[1..].to_vec();
 
-    if args[1] == "." {
-        task = task::Task {
-            cmnd: task::Command::New,
-            input: None,
+    if args[0] == "." {
+        storage::new_article(get_title());
+    } else if &'-'
+        == match &args[0].chars().nth(0) {
+            Some(val) => val,
+            _ => &'+',
+        }
+    {
+        match args[0].as_str() {
+            "-h" | "--help" => {
+                todo!("help");
+            }
+            "-v" | "--version" => {
+                todo!("version");
+            }
+            "-m" => {
+                todo!("Migrate functionality coming soon!");
+            }
+            "-l" => {
+                todo!("Link functionality coming soon!");
+            }
+            "-z" => {
+                todo!("Fuzzy searching coming soon!");
+            }
+            "-s" => {
+                todo!("Synonym/abbrevation searching coming soon!");
+            }
+            _ => {
+                println!("Invalid flag");
+                todo!("--help");
+            }
         }
     } else {
-        task = task::Task {
-            cmnd: task::Command::Search,
-            input: Some(args[1..].join(" ")),
-        }
+        search::search(args.join(" "));
     }
-
-    Ok(task)
 }
 
-fn parse_title(title: String) -> String {
+fn get_title() -> String {
+    print!("Enter a title: ");
+    io::stdout().flush().unwrap();
+
+    let mut title = String::new();
+    io::stdin().read_line(&mut title).expect("Error reading!");
+
     let title: String = title.trim().parse().unwrap();
     let title: String = title.to_lowercase();
     let title: Vec<&str> = title.split(' ').collect();
@@ -32,24 +68,14 @@ fn parse_title(title: String) -> String {
     title
 }
 
-pub fn get_title() -> String {
-    print!("Enter a title: ");
-    io::stdout().flush().unwrap();
-
-    let mut title = String::new();
-    io::stdin().read_line(&mut title).expect("Error reading!");
-
-    parse_title(title)
-}
-
 pub fn search_result(result_arr: Vec<search::Field>) {
     if result_arr.is_empty() {
         println!("No matches!");
         return;
     }
 
-    for i in 0..result_arr.len() {
-        println!("  {}. {}", i + 1, result_arr[i].file);
+    for (index, field) in result_arr.iter().enumerate() {
+        println!("  {}. {}", index + 1, field.file);
     }
 
     let mut input = String::new();
@@ -77,27 +103,9 @@ pub fn search_result(result_arr: Vec<search::Field>) {
     io::stdout().flush().unwrap();
     io::stdin().read_line(&mut input).expect("Error reading!");
 
-    let mode: char = match input.trim() {
-        "" => 'r',
-        "r" => 'r',
-        "R" => 'r',
-        "w" => 'w',
-        "W" => 'w',
-        _ => {
-            println!("Invalid input!");
-            return;
-        }
-    };
-
-    task::do_task(Ok(task::Task {
-        cmnd: match mode {
-            'r' => task::Command::Cat,
-            'w' => task::Command::Editor,
-            _ => {
-                println!("");
-                return;
-            }
-        },
-        input: Some(title),
-    }));
+    match input.trim() {
+        "r" | "R" | "" => storage::cat_article(title),
+        "w" | "W" => storage::open_editor(title),
+        _ => println!("Invalid input!"),
+    }
 }

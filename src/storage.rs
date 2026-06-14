@@ -88,6 +88,23 @@ pub fn open_editor(title: String) {
         .expect("Couldn't open editor.");
 }
 
+pub fn get_note_titles() -> Vec<u8> {
+    let home_dir = match env::home_dir() {
+        Some(path) => path,
+        None => {
+            panic!("Unable to read path to home directory");
+        }
+    };
+    let path_to_notes = format!("{}/.local/share/hey/notes/", home_dir.display());
+
+    let cmnd = process::Command::new("ls")
+        .arg(path_to_notes)
+        .output()
+        .expect("Couldn't find notes directory");
+
+    cmnd.stdout
+}
+
 pub fn cat_article(title: String) {
     let home_dir = match env::home_dir() {
         Some(path) => path,
