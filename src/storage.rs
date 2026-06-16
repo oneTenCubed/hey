@@ -1,11 +1,9 @@
-use crate::app::fatal;
+use crate::{app::fatal, editor};
 use dirs;
 use std::{
-    env,
     fs::{self, DirBuilder},
     io::{self, Write},
     path::PathBuf,
-    process,
 };
 
 fn get_hey_local_data_dir() -> PathBuf {
@@ -68,22 +66,8 @@ pub fn new_article(title: String) {
     }
 
     if open_editor_flag {
-        open_editor(title);
+        editor::open_editor(title);
     }
-}
-
-// TODO: make an editor module
-pub fn open_editor(title: String) {
-    let path_to_file = get_hey_notes_dir().join(title);
-
-    let editor = env::var("VISUAL")
-        .or_else(|_| env::var("EDITOR"))
-        .unwrap_or_else(|_| "vi".to_string());
-
-    let _cmnd = process::Command::new(editor)
-        .arg(path_to_file)
-        .status()
-        .expect("Couldn't open editor.");
 }
 
 pub fn get_note_titles() -> Vec<String> {

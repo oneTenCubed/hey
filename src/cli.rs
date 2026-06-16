@@ -1,4 +1,4 @@
-use crate::{search, storage};
+use crate::{app::fatal, docs, editor, search, storage};
 use std::{
     env,
     io::{self, Write},
@@ -17,9 +17,13 @@ pub fn dispatcher() {
     let args: Vec<String> = args[1..].to_vec();
 
     if args[0] == "." {
-        storage::new_article(get_title());
-        // TODO: add logic for hey . title
-        // i.e, remove new article get title
+        let title = if args.len() > 1 {
+            args[1..].join(" ")
+        } else {
+            get_title()
+        };
+
+        storage::new_article(title);
     } else if &'-'
         == match &args[0].chars().nth(0) {
             Some(val) => val,
@@ -28,10 +32,10 @@ pub fn dispatcher() {
     {
         match args[0].as_str() {
             "-h" | "--help" => {
-                todo!("help");
+                docs::help();
             }
             "-v" | "--version" => {
-                todo!("version");
+                docs::version();
             }
             "-m" => {
                 todo!("Migrate functionality coming soon!");
@@ -63,38 +67,45 @@ fn get_title() -> String {
     io::stdin().read_line(&mut title).expect("Error reading!");
 
     let title: String = title.trim().parse().unwrap();
+    if title.is_empty() {
+        fatal("Invalid title!");
+    }
     let title: String = title.to_lowercase();
 
     title
 }
 
 pub fn search_result(result_arr: Vec<search::Field>) {
+    let mut input = String::new();
+    let mut title = String::new();
+
     if result_arr.is_empty() {
         println!("No matches!");
         return;
-    }
-
-    for (index, field) in result_arr.iter().enumerate() {
-        println!("  {}. {}", index + 1, field.file);
-    }
-
-    let mut input = String::new();
-    print!("\n:: Enter file number to interact: ");
-    io::stdout().flush().unwrap();
-    io::stdin().read_line(&mut input).expect("Error reading!");
-
-    if input.trim() == "" {
-        return;
-    }
-
-    let mut title = String::new();
-    let n = input.trim().parse::<usize>().expect("Invalid input!");
-    match n <= result_arr.len() {
-        true => {
-            title = result_arr[n - 1].file.clone();
+    } else if result_arr.len() == 1 {
+        println!("Exactly one match found: {}", result_arr[0].file);
+        title = result_arr[0].file.clone();
+    } else {
+        for (index, field) in result_arr.iter().enumerate() {
+            println!("  {}. {}", index + 1, field.file);
         }
-        false => {
-            println!("Invalid input!");
+
+        print!("\n:: Enter file number to interact: ");
+        io::stdout().flush().unwrap();
+        io::stdin().read_line(&mut input).expect("Error reading!");
+
+        if input.trim() == "" {
+            return;
+        }
+
+        let n = input.trim().parse::<usize>().expect("Invalid input!");
+        match n <= result_arr.len() {
+            true => {
+                title = result_arr[n - 1].file.clone();
+            }
+            false => {
+                println!("Invalid input!");
+            }
         }
     }
 
@@ -105,7 +116,7 @@ pub fn search_result(result_arr: Vec<search::Field>) {
 
     match input.trim() {
         "r" | "R" | "" => storage::read_article(title),
-        "w" | "W" => storage::open_editor(title),
+        "w" | "W" => editor::open_editor(title),
         _ => println!("Invalid input!"),
     }
 }
