@@ -57,18 +57,33 @@ Results are ranked according to title matches.
 
 Example:
 
-```text
+for
+
+```bash
 hey rust traits
-hey asm directives
 ```
+
+result:
+
+```text
+1, rust traits
+2, rust ownership
+```
+
+i.e, exact match scores higher
 
 ## Storage
 
 Notes are stored locally under:
 
-```text
-~/.local/share/hey
-```
+Linux:
+`$XDG_DATA_HOME/hey` OR `$HOME/.local/share/hey`
+
+macOS:
+`$HOME/Library/Application Support`
+
+Windows:
+`{FOLDERID_LocalAppData}`
 
 Current versions store notes directly within hey-managed storage. [^3]
 [^3]: hey currently targets Linux systems and follows common Unix conventions. As such, the program should work on most Linux based systems and Unix like systems. The latter is untested.
@@ -103,7 +118,7 @@ cargo install oneTenCubed-hey
 
 ## Project Status
 
-Current version: 0.2.0
+Current version: 0.2.3
 
 hey is a personal project built as part of learning Rust, systems programming, and software architecture.
 

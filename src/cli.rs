@@ -18,6 +18,8 @@ pub fn dispatcher() {
 
     if args[0] == "." {
         storage::new_article(get_title());
+        // TODO: add logic for hey . title
+        // i.e, remove new article get title
     } else if &'-'
         == match &args[0].chars().nth(0) {
             Some(val) => val,

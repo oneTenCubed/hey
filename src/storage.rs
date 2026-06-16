@@ -1,49 +1,59 @@
+use crate::app::fatal;
+use dirs;
 use std::{
     env,
     fs::{self, DirBuilder},
     io::{self, Write},
-    path::Path,
+    path::PathBuf,
     process,
 };
 
-pub fn initialize_storage() {
-    let home_dir = match env::home_dir() {
-        Some(path) => path,
-        None => {
-            panic!("Unable to read path to home directory");
-        }
-    };
+fn get_hey_local_data_dir() -> PathBuf {
+    let local_data_dir = dirs::data_local_dir();
 
-    let root_dir_path = format!("{}/.local/share/hey", home_dir.display());
+    match local_data_dir {
+        Some(path) => path.join("hey"),
+        None => {
+            fatal("Unable to find local data directory!");
+        }
+    }
+}
+
+pub fn get_hey_notes_dir() -> PathBuf {
+    let notes_dir = get_hey_local_data_dir().join("notes");
+
+    if notes_dir.is_dir() {
+        notes_dir
+    } else {
+        fatal("Unable to find notes data directory!");
+    }
+}
+
+pub fn initialize_storage() {
+    let root_dir_path = get_hey_local_data_dir().join("hey");
     let root_dir_stat = DirBuilder::new().recursive(true).create(&root_dir_path);
     match root_dir_stat {
         Ok(_) => (),
         Err(_) => {
-            panic!("Error initialising base directory: {}", root_dir_path);
+            fatal("Error initialising hey dir"); // TODO: add cli error. i.e, match error type
         }
     }
 
-    let notes_dir_path = format!("{}/.local/share/hey/notes", home_dir.display());
+    let notes_dir_path = root_dir_path.join("notes");
     let notes_dir_stat = DirBuilder::new().recursive(true).create(&notes_dir_path);
     match notes_dir_stat {
         Ok(_) => (),
         Err(_) => {
-            panic!("Error initialising notes directory: {}", notes_dir_path);
+            fatal("Error initialising notes dir"); // TODO ^^^^
         }
     }
 }
 
 pub fn new_article(title: String) {
-    let home_dir = match env::home_dir() {
-        Some(path) => path,
-        None => {
-            panic!("Unable to read path to home directory");
-        }
-    };
-    let path_to_file = format!("{}/.local/share/hey/notes/{}", home_dir.display(), title);
+    let path_to_file = get_hey_notes_dir().join(&title);
 
     let mut open_editor_flag = true;
-    if Path::new(&path_to_file).is_file() {
+    if path_to_file.is_file() {
         let mut input = String::new();
 
         print!(":: File with matching title already exists, open it instead? [Y/n] ");
@@ -64,13 +74,7 @@ pub fn new_article(title: String) {
 
 // TODO: make an editor module
 pub fn open_editor(title: String) {
-    let home_dir = match env::home_dir() {
-        Some(path) => path,
-        None => {
-            panic!("Unable to read path to home directory");
-        }
-    };
-    let path_to_file = format!("{}/.local/share/hey/notes/{}", home_dir.display(), title);
+    let path_to_file = get_hey_notes_dir().join(title);
 
     let editor = env::var("VISUAL")
         .or_else(|_| env::var("EDITOR"))
@@ -83,13 +87,7 @@ pub fn open_editor(title: String) {
 }
 
 pub fn get_note_titles() -> Vec<String> {
-    let home_dir = match env::home_dir() {
-        Some(path) => path,
-        None => {
-            panic!("Unable to read path to home directory");
-        }
-    };
-    let path_to_notes = home_dir.join(".local/share/hey/notes/");
+    let path_to_notes = get_hey_notes_dir();
 
     let mut titles: Vec<String> = Vec::new();
 
@@ -109,8 +107,8 @@ pub fn get_note_titles() -> Vec<String> {
             }
         };
 
-        let binding = entry.path();
-        let entry = binding.file_name();
+        let entry = entry.path();
+        let entry = entry.file_name();
         let entry = match entry {
             Some(entry) => match entry.to_str() {
                 Some(entry) => entry,
@@ -126,13 +124,7 @@ pub fn get_note_titles() -> Vec<String> {
 }
 
 pub fn read_article(title: String) {
-    let home_dir = match env::home_dir() {
-        Some(path) => path,
-        None => {
-            panic!("Unable to read path to home directory");
-        }
-    };
-    let path_to_file = format!("{}/.local/share/hey/notes/{}", home_dir.display(), title);
+    let path_to_file = get_hey_notes_dir().join(title);
 
     let file_content = fs::read_to_string(path_to_file);
     match file_content {
@@ -140,10 +132,7 @@ pub fn read_article(title: String) {
             println!("\n{}", s);
         }
         Err(_) => {
-            println!("Couldn't read file contents");
+            eprintln!("Couldn't read file contents");
         }
     }
 }
-
-// !!!TODO
-// home_dir, path_to_file repeated nearly everywhere. refactor and introduce helper functions

@@ -9,6 +9,7 @@ repository = "https://github.com/oneTenCubed/hey"
 license = "MIT"
 
 [dependencies]
+dirs = "6.0.0"
 
 [[bin]]
 name = "hey"
