@@ -34,10 +34,6 @@ pub fn initialize_storage() {
 }
 
 pub fn new_article(title: String) {
-    let editor = env::var("VISUAL")
-        .or_else(|_| env::var("EDITOR"))
-        .unwrap_or_else(|_| "vi".to_string());
-
     let home_dir = match env::home_dir() {
         Some(path) => path,
         None => {
@@ -62,19 +58,12 @@ pub fn new_article(title: String) {
     }
 
     if open_editor_flag {
-        let _cmnd = process::Command::new(editor)
-            .arg(path_to_file)
-            .status()
-            .expect("Couldn't open editor.");
-    } // same as open_editor(), merge and refactor :: TODO!
+        open_editor(title);
+    }
 }
 
+// TODO: make an editor module
 pub fn open_editor(title: String) {
-    // TODO!! ^^^ merge and refactor
-    let editor = env::var("VISUAL")
-        .or_else(|_| env::var("EDITOR"))
-        .unwrap_or_else(|_| "vi".to_string());
-
     let home_dir = match env::home_dir() {
         Some(path) => path,
         None => {
@@ -82,6 +71,10 @@ pub fn open_editor(title: String) {
         }
     };
     let path_to_file = format!("{}/.local/share/hey/notes/{}", home_dir.display(), title);
+
+    let editor = env::var("VISUAL")
+        .or_else(|_| env::var("EDITOR"))
+        .unwrap_or_else(|_| "vi".to_string());
 
     let _cmnd = process::Command::new(editor)
         .arg(path_to_file)
