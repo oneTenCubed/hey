@@ -36,7 +36,6 @@ pub fn initialize_storage() {
             fatal("Error initialising hey dir"); // TODO: add cli error. i.e, match error type
         }
     }
-    println!("{:?}", root_dir_path);
 
     let notes_dir_path = root_dir_path.join("notes");
     let notes_dir_stat = DirBuilder::new().recursive(true).create(&notes_dir_path);
@@ -46,7 +45,6 @@ pub fn initialize_storage() {
             fatal("Error initialising notes dir"); // TODO ^^^^
         }
     }
-    println!("{:?}", notes_dir_path);
 }
 
 pub fn new_article(title: String) {
