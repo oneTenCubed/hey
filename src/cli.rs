@@ -11,12 +11,11 @@ pub fn dispatcher() {
     // Maybe needed in the future, like warnings for using deprecated invoke commands
 
     if args.len() < 2 {
-        println!("print --help details"); // TODO
-        return;
+        docs::help();
     }
     let args: Vec<String> = args[1..].to_vec();
 
-    if args[0] == "." {
+    if args[0] == "." || args[0] == "--add" {
         let title = if args.len() > 1 {
             args[1..].join(" ")
         } else {
@@ -37,7 +36,10 @@ pub fn dispatcher() {
             "-v" | "--version" => {
                 docs::version();
             }
-            "-m" => {
+            "--help-verbose" => {
+                docs::help_verbose();
+            }
+            /*"-m" => {
                 todo!("Migrate functionality coming soon!");
             }
             "-l" => {
@@ -48,10 +50,10 @@ pub fn dispatcher() {
             }
             "-s" => {
                 todo!("Synonym/abbrevation searching coming soon!");
-            }
+            }*/
             _ => {
-                println!("Invalid flag");
-                todo!("--help");
+                println!("Invalid flag!\n");
+                docs::help();
             }
         }
     } else {

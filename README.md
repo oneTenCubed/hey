@@ -116,9 +116,25 @@ At present, hey is not intended to be:
 cargo install oneTenCubed-hey
 ```
 
+## Manpage
+
+To generate a man page for hey,
+
+1, Go to: **https://github.com/oneTenCubed/hey**
+2, Find the **docs** directory
+3, Open **hey.1** inside **man** directory
+4, Download raw file
+5, Find it in downloads, let: ~/downloads/hey.1
+6, Install to system's manpage db by running the command
+```bash
+sudo install -Dm644 ~/downloads/hey.1 /usr/local/share/man/man1/hey.1
+```
+
+Now running `man hey` produces a proper manpage for hey
+
 ## Project Status
 
-Current version: 0.2.3
+Current version: 0.3.0
 
 hey is a personal project built as part of learning Rust, systems programming, and software architecture.
 

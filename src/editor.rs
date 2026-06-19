@@ -10,7 +10,7 @@ fn get_editor() -> String {
         default = "vi".to_string();
     }
 
-    env::var("HEY_EDITOR") // TODO: mention in docs
+    env::var("HEY_EDITOR")
         .or_else(|_| env::var("VISUAL"))
         .or_else(|_| env::var("EDITOR"))
         .unwrap_or(default)
