@@ -28,7 +28,7 @@ pub fn get_hey_notes_dir() -> PathBuf {
 }
 
 pub fn initialize_storage() {
-    let root_dir_path = get_hey_local_data_dir().join("hey");
+    let root_dir_path = get_hey_local_data_dir();
     let root_dir_stat = DirBuilder::new().recursive(true).create(&root_dir_path);
     match root_dir_stat {
         Ok(_) => (),
@@ -36,6 +36,7 @@ pub fn initialize_storage() {
             fatal("Error initialising hey dir"); // TODO: add cli error. i.e, match error type
         }
     }
+    println!("{:?}", root_dir_path);
 
     let notes_dir_path = root_dir_path.join("notes");
     let notes_dir_stat = DirBuilder::new().recursive(true).create(&notes_dir_path);
@@ -45,6 +46,7 @@ pub fn initialize_storage() {
             fatal("Error initialising notes dir"); // TODO ^^^^
         }
     }
+    println!("{:?}", notes_dir_path);
 }
 
 pub fn new_article(title: String) {

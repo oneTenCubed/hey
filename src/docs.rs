@@ -13,7 +13,7 @@ pub fn help() {
     println!("  GENERAL");
     println!("    -v, --version\t\tDisplay version information and exit");
     println!("    -h, --help\t\t\tShow this message");
-    println!("    --help-verbose\t\t\tShow ");
+    println!("    --help-verbose\t\tShow a more descriptive help message");
 
     println!("\n  NOTE CREATION");
     println!("    . , --add [keywords...]\tAdd a new note (e.g. 'hey . hey flags')");
