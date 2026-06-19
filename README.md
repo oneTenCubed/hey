@@ -58,13 +58,11 @@ Results are ranked according to title matches.
 Example:
 
 for
-
 ```bash
 hey rust traits
 ```
 
 result:
-
 ```text
 1, rust traits
 2, rust ownership
@@ -116,6 +114,8 @@ At present, hey is not intended to be:
 cargo install oneTenCubed-hey
 ```
 
+See Troubleshooting in case of errors.
+
 ## Manpage
 
 To generate a man page for hey,
@@ -132,9 +132,63 @@ sudo install -Dm644 ~/downloads/hey.1 /usr/local/share/man/man1/hey.1
 
 Now running `man hey` produces a proper manpage for hey
 
+## Troubleshooting
+
+### `cargo` command not working?
+
+`cargo` is the package manager for rust programming language. To install `cargo`, it is recommended to install `rustup`. `rustup` is most probably available to install through your system's package manager, or else visit: https://rustup.rs/
+
+### `hey` command not working after install through cargo?
+
+The most probable reason is that `$PATH` isn't set to cargo's binary directory ($HOME/.cargo/bin). To add to path:
+
+#### Linux & macOS
+Assuming Cargo is in `~/.cargo/bin`
+
+1. Add to your shell config:
+- zsh: `~/.zshrc`
+- bash: `~/.bash_profile` (or `~/.bashrc`)
+
+2. Append:
+```bash
+export PATH="$HOME/.cargo/bin:$PATH"
+```
+add it at the very end of the shell config)
+
+3. Reload config:
+```bash
+source ~/.zshrc     # or: source ~/.bash_profile
+```
+
+4. Verify:
+```bash
+cargo --version
+```
+
+#### Windows (PowerShell)
+
+1. Check it exists:
+- `%USERPROFILE%\.cargo\bin`
+
+2. Add it for your user:
+```powershell
+$old = [Environment]::GetEnvironmentVariable("Path","User")
+if ($old -notlike "*$env:USERPROFILE\.cargo\bin*") {
+  [Environment]::SetEnvironmentVariable("Path", "$old;$env:USERPROFILE\.cargo\bin", "User")
+}
+```
+
+3. Restart your terminal (or sign out/in).
+
+
+If all steps are followed correctly, `hey` should run now. Check:
+```bash
+hey --version
+```
+
 ## Project Status
 
-Current version: 0.3.4
+Current version: 0.3.5
 
 hey is a personal project built as part of learning Rust, systems programming, and software architecture.
 
