@@ -12,6 +12,7 @@ pub fn dispatcher() {
 
     if args.len() < 2 {
         docs::help();
+        return;
     }
     let args: Vec<String> = args[1..].to_vec();
 
