@@ -134,7 +134,7 @@ Now running `man hey` produces a proper manpage for hey
 
 ## Project Status
 
-Current version: 0.3.0
+Current version: 0.3.4
 
 hey is a personal project built as part of learning Rust, systems programming, and software architecture.
 

@@ -78,7 +78,7 @@ pub fn get_note_titles() -> Vec<String> {
     for entry in match fs::read_dir(&path_to_notes) {
         Ok(entry) => entry,
         _ => {
-            println!("Unexpected error occurred!");
+            eprintln!("Unexpected error occurred!");
             // TODO: handle errors such as permission denied or broken symlinks
             return Vec::new();
         }
@@ -86,7 +86,7 @@ pub fn get_note_titles() -> Vec<String> {
         let entry = match entry {
             Ok(entry) => entry,
             _ => {
-                println!("Unexpected error occurred!");
+                eprintln!("Unexpected error occurred!");
                 return Vec::new();
             }
         };

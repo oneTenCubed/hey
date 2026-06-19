@@ -62,6 +62,7 @@ pub fn dispatcher() {
     }
 }
 
+// TODO: Improve title acceptance logic, make a format for title
 fn get_title() -> String {
     print!("Enter a title: ");
     io::stdout().flush().unwrap();
@@ -80,7 +81,7 @@ fn get_title() -> String {
 
 pub fn search_result(result_arr: Vec<search::Field>) {
     let mut input = String::new();
-    let mut title = String::new();
+    let title: String;
 
     if result_arr.is_empty() {
         println!("No matches!");
@@ -93,22 +94,49 @@ pub fn search_result(result_arr: Vec<search::Field>) {
             println!("  {}. {}", index + 1, field.file);
         }
 
-        print!("\n:: Enter file number to interact: ");
-        io::stdout().flush().unwrap();
-        io::stdin().read_line(&mut input).expect("Error reading!");
+        println!("");
+        loop {
+            print!(":: Enter file number to interact: ");
+            io::stdout().flush().unwrap();
+            input.clear();
+            match io::stdin().read_line(&mut input) {
+                Ok(_) => (),
+                Err(_) => {
+                    eprintln!("  Error reading!");
+                    continue;
+                }
+            };
 
-        if input.trim() == "" {
-            return;
-        }
+            input = input.trim().to_string();
+            if input == "" || input == "q" || input == "Q" {
+                return;
+            }
 
-        let n = input.trim().parse::<usize>().expect("Invalid input!");
-        match n <= result_arr.len() {
-            true => {
-                title = result_arr[n - 1].file.clone();
+            let n = match input.parse::<usize>() {
+                Ok(value) => value,
+                Err(_) => {
+                    eprintln!(
+                        "  Invalid input! Expected 1-{} (or press Enter to exit)",
+                        result_arr.len()
+                    );
+                    continue;
+                }
+            };
+
+            match n <= result_arr.len() {
+                true => {
+                    title = result_arr[n - 1].file.clone();
+                }
+                false => {
+                    eprintln!(
+                        "  Invalid input! Expected 1-{} (or press Enter to exit)",
+                        result_arr.len()
+                    );
+                    continue;
+                }
             }
-            false => {
-                println!("Invalid input!");
-            }
+
+            break;
         }
     }
 
