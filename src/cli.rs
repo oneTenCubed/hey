@@ -84,14 +84,14 @@ pub fn search_result(result_arr: Vec<search::Field>) {
     let title: String;
 
     if result_arr.is_empty() {
-        println!("No matches!");
+        println!("  No matches!");
         return;
     } else if result_arr.len() == 1 {
         println!("Exactly one match found: {}", result_arr[0].file);
         title = result_arr[0].file.clone();
     } else {
         for (index, field) in result_arr.iter().enumerate() {
-            println!("  {}. {}", index + 1, field.file);
+            println!("  {}. {}", index + 1, field.display_name);
         }
 
         println!("");
@@ -143,11 +143,11 @@ pub fn search_result(result_arr: Vec<search::Field>) {
     input.clear();
     print!(":: Display content (r) OR open in editor (w)? [R/w] ");
     io::stdout().flush().unwrap();
-    io::stdin().read_line(&mut input).expect("Error reading!");
+    io::stdin().read_line(&mut input).expect("  Error reading!");
 
     match input.trim() {
         "r" | "R" | "" => storage::read_article(title),
         "w" | "W" => editor::open_editor(title),
-        _ => println!("Invalid input!"),
+        _ => println!("  Invalid input!"),
     }
 }

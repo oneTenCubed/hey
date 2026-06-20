@@ -16,7 +16,7 @@ pub fn help() {
     println!("    --help-verbose\t\tShow a more descriptive help message");
 
     println!("\n  NOTE CREATION");
-    println!("    . , --add [keywords...]\tAdd a new note (e.g. 'hey . hey flags')");
+    println!("    . , --add [keywords...]\tAdd a new note (e.g. 'hey . rust macros')");
 
     println!("\n  SEARCH");
     println!("    [keywords...]\t\tSearch for notes matching the given keywords");
@@ -25,8 +25,8 @@ pub fn help() {
     println!("    HEY_EDITOR\t\t\tEditor command used by hey (overrides VISUAL and EDITOR)");
 
     println!("\n  EXAMPLES");
-    println!("    hey . hey options");
-    println!("    hey hey options");
+    println!("    hey . rust ownership");
+    println!("    hey rust traits");
     println!("    hey --help");
 }
 

@@ -32,7 +32,7 @@ The original note files remain accessible without hey.
 Run this command to add a note:
 
 ```bash
-hey .
+hey .   # or hey . title word
 ```
 
 Create a new note by providing a title with matching keywords.
@@ -186,9 +186,41 @@ If all steps are followed correctly, `hey` should run now. Check:
 hey --version
 ```
 
+### Another command with similar name `hey`?
+    
+The quickest fix is to give an alias to this `hey` by adding this line to your shell config.
+```bash
+alias name='$HOME/.cargo/bin/hey' 
+# replace name with any alias you want like, heyy or note
+```
+
+## Platform Notes
+- Linux
+    
+    1. Arch Linux x86_64
+        `hey` was developed and initially tested in Arch Linux x86_64.
+
+    2. Kali GNU/Linux Rolling x86_64
+        `hey` has been tested successfully.
+        Found quirks regarding binary with similar alias, see troubleshooting for help.
+
+- Windows 11 (25H2) x86_64
+
+- MacOS (14 Sonoma)
+
+- FreeBSD
+    `hey` has been tested successfully in FreeBSD 14.3-RELEASE.
+    Found rustc version lag when rust is installed through the package manager. Install rustup to get the latest rustc version, `hey` requires rustc v1.95. See "Troubleshooting" to get rustup website link.
+
+- Android (Termux)
+    `hey` has been tested successfully in Termux on Android 10 aarch64.
+    Installation is currently undocumented. [^4]
+
+[^4]: Contact for documentation.
+
 ## Project Status
 
-Current version: 0.3.5
+Current version: 0.3.6
 
 hey is a personal project built as part of learning Rust, systems programming, and software architecture.
 

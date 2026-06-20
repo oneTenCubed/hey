@@ -4,6 +4,7 @@ use crate::{cli, storage};
 pub struct Field {
     pub matches: i32,
     pub file: String,
+    pub display_name: String,
 }
 
 pub fn search(s: String) {
@@ -14,7 +15,9 @@ pub fn search(s: String) {
     let mut result: Vec<Field> = Vec::new();
 
     for title in titles {
-        let title_tokens: Vec<&str> = title.split(' ').collect();
+        let file = title.clone();
+        let binding: Vec<&str> = title.split(".txt").collect();
+        let title_tokens: Vec<&str> = binding[0].split('_').collect();
         let mut count = 0;
 
         for title_token in &title_tokens {
@@ -27,7 +30,8 @@ pub fn search(s: String) {
 
         result.push(Field {
             matches: count,
-            file: title,
+            file: file,
+            display_name: title_tokens.join(" "),
         });
     }
 

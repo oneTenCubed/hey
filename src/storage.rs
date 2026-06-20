@@ -48,6 +48,10 @@ pub fn initialize_storage() {
 }
 
 pub fn new_article(title: String) {
+    let title: Vec<&str> = title.split(' ').collect();
+    let mut title: String = title.join("_");
+    title.push_str(".txt");
+
     let path_to_file = get_hey_notes_dir().join(&title);
 
     let mut open_editor_flag = true;
