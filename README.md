@@ -83,8 +83,7 @@ macOS:
 Windows:
 `{FOLDERID_LocalAppData}`
 
-Current versions store notes directly within hey-managed storage. [^3]
-[^3]: hey currently targets Linux systems and follows common Unix conventions. As such, the program should work on most Linux based systems and Unix like systems. The latter is untested.
+Current versions store notes directly within hey-managed storage.
 
 ## Roadmap
 
@@ -218,9 +217,9 @@ alias name='$HOME/.cargo/bin/hey'
 
 - Android (Termux)
     `hey` has been tested successfully in Termux on Android 10 aarch64.
-    Installation is currently undocumented. [^4]
+    Installation is currently undocumented. [^3]
 
-[^4]: Contact for documentation.
+[^3]: Contact for documentation.
 
 ## Project Status
 
