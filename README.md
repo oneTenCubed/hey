@@ -148,6 +148,7 @@ Assuming Cargo is in `~/.cargo/bin`
 1. Add to your shell config:
 - zsh: `~/.zshrc`
 - bash: `~/.bash_profile` (or `~/.bashrc`)
+- sh: `~/.shrc` 
 
 2. Append:
 ```bash
@@ -172,9 +173,9 @@ cargo --version
 
 2. Add it for your user:
 ```powershell
-$old = [Environment]::GetEnvironmentVariable("Path","User")
-if ($old -notlike "*$env:USERPROFILE\.cargo\bin*") {
-  [Environment]::SetEnvironmentVariable("Path", "$old;$env:USERPROFILE\.cargo\bin", "User")
+$old = [Environment]::GetEnvironmentVariable("Path","User") `
+if ($old -notlike "*$env:USERPROFILE\.cargo\bin*") { `
+  [Environment]::SetEnvironmentVariable("Path", "$old;$env:USERPROFILE\.cargo\bin", "User") `
 }
 ```
 
@@ -205,10 +206,13 @@ alias name='$HOME/.cargo/bin/hey'
         Found quirks regarding binary with similar alias, see troubleshooting for help.
 
 - Windows 11 (25H2) x86_64
+    `hey` has been tested successfully in Windows 11 (25H2).
+    Search related bug from v0.3.5 has been patched.
 
-- MacOS (14 Sonoma)
+- MacOS (14 Sonoma) x86_64
+    `hey` has been tested successfully in macOS 14 Sonoma x86_64.
 
-- FreeBSD
+- FreeBSD x86_64
     `hey` has been tested successfully in FreeBSD 14.3-RELEASE.
     Found rustc version lag when rust is installed through the package manager. Install rustup to get the latest rustc version, `hey` requires rustc v1.95. See "Troubleshooting" to get rustup website link.
 

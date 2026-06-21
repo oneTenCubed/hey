@@ -87,7 +87,7 @@ pub fn search_result(result_arr: Vec<search::Field>) {
         println!("  No matches!");
         return;
     } else if result_arr.len() == 1 {
-        println!("Exactly one match found: {}", result_arr[0].file);
+        println!("  Exactly one match found: {}", result_arr[0].display_name);
         title = result_arr[0].file.clone();
     } else {
         for (index, field) in result_arr.iter().enumerate() {

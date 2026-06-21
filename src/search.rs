@@ -1,4 +1,4 @@
-use crate::{cli, storage};
+use crate::{app::fatal, cli, storage};
 
 #[derive(Clone)]
 pub struct Field {
@@ -35,7 +35,13 @@ pub fn search(s: String) {
         });
     }
 
-    let n = result.len();
+    let n = match result.len() {
+        0 => {
+            fatal("No notes have been created yet. Create new notes to start searching.");
+        }
+        val => val,
+    };
+
     let mut temp;
     for i in 0..(n - 1) {
         for j in 0..(n - i - 1) {
