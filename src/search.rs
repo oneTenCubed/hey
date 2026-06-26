@@ -16,7 +16,7 @@ pub fn search(s: String) {
 
     for title in titles {
         let file = title.clone();
-        let binding: Vec<&str> = title.split(".").collect();
+        let binding: Vec<&str> = title.split(".").collect(); // TODO: use file_stem()
         let title_tokens: Vec<&str> = binding[0].split('_').collect();
         let mut count = 0;
 

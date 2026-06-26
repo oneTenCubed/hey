@@ -6,7 +6,7 @@ use std::{
     path::PathBuf,
 };
 
-pub fn import(levels: u8, ignore_tokens: HashSet<&str>, confirm: bool) {
+pub fn import(levels: u8, ignore_tokens: HashSet<&str>, confirm: bool, overwrite: bool) {
     let src_dir: PathBuf = match env::current_dir() {
         Ok(path) => path,
         Err(_) => {
@@ -23,43 +23,30 @@ pub fn import(levels: u8, ignore_tokens: HashSet<&str>, confirm: bool) {
     let mut counter = 0;
 
     for title in titles {
-        let mut curr_tokens = tokens.clone();
-        let mut new_title = String::new();
-        let title_tokens: Vec<&str> = title.split('.').collect(); // TODO: use PathBuf::extension()
-        let title_tokens: Vec<&str> = title_tokens[0].split('_').collect();
-        for token in &title_tokens {
-            curr_tokens.insert(token.to_lowercase().to_string());
+        if !old_path.is_file() || title.chars().nth(0) == Some('.') {
+            continue;
         }
 
-        let exhaustable_tokens = curr_tokens.clone();
-        let mut new_title_tokens: Vec<String> = exhaustable_tokens.into_iter().collect();
-        new_title_tokens.sort();
-        let new_title_tokens = new_title_tokens.join("_");
-        new_title.push_str(new_title_tokens.as_str());
-        // TODO: ^^^ make it get_new_title()
-
-        let file = PathBuf::from(&title);
-        match file.extension() {
+        match PathBuf::from(&title).extension() {
             Some(extension) => match extension.to_str() {
-                Some(string) => {
-                    new_title.push('.');
-                    new_title.push_str(string);
-                }
-                None => {
-                    fatal("Invalid extension!");
-                }
+                Some(string) => match string {
+                    "txt" | "md" => (),
+                    _ => continue,
+                },
+                None => continue,
             },
             None => (),
-        };
+        }
+
+        let new_title = get_new_title(tokens.clone(), title.clone());
 
         let old_location = old_path.join(&title);
         let new_location = new_path.join(&new_title);
-        // TODO: decide what to do with symlinks
 
+        let keywords: Vec<&str> = new_title.split('.').collect();
+        let keywords: Vec<&str> = keywords[0].split('_').collect();
+        let file_already_exist = if new_location.is_file() { true } else { false };
         if confirm {
-            // TODO: confirm overwriting
-            let keywords: Vec<&str> = new_title.split('.').collect();
-            let keywords: Vec<&str> = keywords[0].split('_').collect();
             println!("\n  Importing file \"{}\" with keywords:", &title);
             print!("\t");
             io::stdout().flush().unwrap();
@@ -68,25 +55,53 @@ pub fn import(levels: u8, ignore_tokens: HashSet<&str>, confirm: bool) {
             }
             io::stdout().flush().unwrap();
 
-            print!("\n:: Import file (y) OR edit keywords (e) [Yen]? ");
+            print!(
+                "{}\n:: {} file (y) OR edit keywords (e) [Yen]? ",
+                if overwrite && file_already_exist {
+                    "\n  File with matching keywords already exist!"
+                } else {
+                    ""
+                },
+                if overwrite && file_already_exist {
+                    "Overwrite"
+                } else {
+                    "Import"
+                }
+            );
             io::stdout().flush().unwrap();
             input.clear();
             io::stdin().read_line(&mut input).expect("  Error reading!");
         } else {
-            input = String::from("y");
+            if overwrite && file_already_exist {
+                println!("\n  File with matching keywords already exist!");
+                print!("    Keywords: ");
+                io::stdout().flush().unwrap();
+                for keyword in keywords {
+                    print!("\"{}\" ", keyword);
+                }
+                io::stdout().flush().unwrap();
+
+                print!("\n:: Overwrite file (y) OR edit keywords (e) [Yen]? ");
+                io::stdout().flush().unwrap();
+                input.clear();
+                io::stdin().read_line(&mut input).expect("  Error reading!");
+            } else {
+                input = String::from("y");
+            }
         }
 
         match input.trim() {
             "q" => {
                 break;
             }
-            "e" => {} // TODO: implement confirm mode
+            "e" => {} // TODO: implement confirm mode / edit keywords
             "n" => {
                 println!("Skipping file...");
                 continue;
             }
             _ => {
                 let _ = fs::copy(old_location, new_location).expect("  Error copying!");
+                // TODO: handle errors like disk full, permission denied, ro destination etc...
                 counter += 1;
             }
         }
@@ -134,4 +149,36 @@ fn tokenize(src_dir: PathBuf, levels: u8, ignore_tokens: HashSet<&str>) -> HashS
     }
 
     tokens
+}
+
+fn get_new_title(mut curr_tokens: HashSet<String>, title: String) -> String {
+    let mut new_title = String::new();
+
+    let title_tokens: Vec<&str> = title.split('.').collect();
+    let title_tokens: Vec<&str> = title_tokens[0].split('_').collect();
+    for token in &title_tokens {
+        curr_tokens.insert(token.to_lowercase().to_string());
+    }
+
+    let exhaustable_tokens = curr_tokens.clone();
+    let mut new_title_tokens: Vec<String> = exhaustable_tokens.into_iter().collect();
+    new_title_tokens.sort();
+    let new_title_tokens = new_title_tokens.join("_");
+    new_title.push_str(new_title_tokens.as_str());
+
+    let file = PathBuf::from(&title);
+    match file.extension() {
+        Some(extension) => match extension.to_str() {
+            Some(string) => {
+                new_title.push('.');
+                new_title.push_str(string);
+            }
+            None => {
+                fatal("Invalid extension!");
+            }
+        },
+        None => (),
+    };
+
+    new_title
 }

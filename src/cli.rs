@@ -5,6 +5,7 @@ use std::{
     io::{self, Write},
 };
 
+// TODO: new module for parsing and dispatching
 pub fn dispatcher() {
     let args: Vec<String> = env::args().collect();
 
@@ -42,6 +43,7 @@ pub fn dispatcher() {
                 docs::help_verbose();
             }
             "-i" | "--import" | "-ic" | "--import-confirm" => {
+                // TODO: add an --overwrite flag
                 let mut level_flag_index = None;
                 let mut ignore_flag_index = None;
 
@@ -82,6 +84,7 @@ pub fn dispatcher() {
                             unreachable!();
                         }
                     },
+                    true, // TODO: implement overwrite
                 );
             }
             /*"-l" => {
