@@ -27,13 +27,23 @@ pub fn get_hey_notes_dir() -> PathBuf {
     }
 }
 
+pub fn get_hey_imports_dir() -> PathBuf {
+    let imports_dir = get_hey_local_data_dir().join("imports");
+
+    if imports_dir.is_dir() {
+        imports_dir
+    } else {
+        fatal("Unable to find imports data directory!");
+    }
+}
+
 pub fn initialize_storage() {
     let root_dir_path = get_hey_local_data_dir();
     let root_dir_stat = DirBuilder::new().recursive(true).create(&root_dir_path);
     match root_dir_stat {
         Ok(_) => (),
         Err(_) => {
-            fatal("Error initialising hey dir"); // TODO: add cli error. i.e, match error type
+            fatal("Error initialising hey dir!"); // TODO: add cli error. i.e, match error type
         }
     }
 
@@ -42,7 +52,16 @@ pub fn initialize_storage() {
     match notes_dir_stat {
         Ok(_) => (),
         Err(_) => {
-            fatal("Error initialising notes dir"); // TODO ^^^^
+            fatal("Error initialising notes dir!"); // TODO ^^^^
+        }
+    }
+
+    let imports_dir_path = root_dir_path.join("imports");
+    let imports_dir_stat = DirBuilder::new().recursive(true).create(&imports_dir_path);
+    match imports_dir_stat {
+        Ok(_) => (),
+        Err(_) => {
+            fatal("Error initialising imports dir!"); // TODO ^^^^
         }
     }
 }
@@ -58,7 +77,7 @@ pub fn new_article(title: String) {
     if path_to_file.is_file() {
         let mut input = String::new();
 
-        print!(":: File with matching title already exists, open it instead? [Y/n] ");
+        print!(":: File with matching title already exists, open it instead [Yn]? ");
         io::stdout().flush().unwrap();
         io::stdin().read_line(&mut input).expect("Error reading!");
 
@@ -74,9 +93,7 @@ pub fn new_article(title: String) {
     }
 }
 
-pub fn get_note_titles() -> Vec<String> {
-    let path_to_notes = get_hey_notes_dir();
-
+pub fn get_note_titles(path_to_notes: PathBuf) -> Vec<String> {
     let mut titles: Vec<String> = Vec::new();
 
     for entry in match fs::read_dir(&path_to_notes) {
@@ -109,18 +126,4 @@ pub fn get_note_titles() -> Vec<String> {
     }
 
     titles
-}
-
-pub fn read_article(title: String) {
-    let path_to_file = get_hey_notes_dir().join(title);
-
-    let file_content = fs::read_to_string(path_to_file);
-    match file_content {
-        Ok(s) => {
-            println!("\n{}", s);
-        }
-        Err(_) => {
-            eprintln!("Couldn't read file contents");
-        }
-    }
 }

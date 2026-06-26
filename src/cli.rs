@@ -1,6 +1,7 @@
-use crate::{app::fatal, docs, editor, search, storage};
+use crate::{app::fatal, docs, editor, import, search, storage};
 use std::{
-    env,
+    collections::HashSet,
+    env, fs,
     io::{self, Write},
 };
 
@@ -40,10 +41,50 @@ pub fn dispatcher() {
             "--help-verbose" => {
                 docs::help_verbose();
             }
-            /*"-m" => {
-                todo!("Migrate functionality coming soon!");
+            "-i" | "--import" | "-ic" | "--import-confirm" => {
+                let mut level_flag_index = None;
+                let mut ignore_flag_index = None;
+
+                for (index, arg) in args.iter().enumerate() {
+                    if arg == "--ignore" {
+                        ignore_flag_index = Some(index);
+                    } else if arg == "-l" || arg == "--levels" {
+                        level_flag_index = Some(index);
+                    }
+                }
+
+                import::import(
+                    match level_flag_index {
+                        Some(index) => {
+                            let level = &args[index + 1];
+                            let level: u8 = level.parse().expect("  Invalid level!");
+
+                            level
+                        }
+                        None => 0,
+                    },
+                    match ignore_flag_index {
+                        Some(index) => {
+                            let mut set = HashSet::new();
+                            if ignore_flag_index > level_flag_index {
+                                for arg in &args[(index + 1)..] {
+                                    set.insert(&arg[..]);
+                                }
+                            }
+                            set
+                        }
+                        None => HashSet::new(),
+                    },
+                    match args[0].as_str() {
+                        "-i" | "--import" => false,
+                        "-ic" | "--import-confirm" => true,
+                        _ => {
+                            unreachable!();
+                        }
+                    },
+                );
             }
-            "-l" => {
+            /*"-l" => {
                 todo!("Link functionality coming soon!");
             }
             "-z" => {
@@ -62,7 +103,7 @@ pub fn dispatcher() {
     }
 }
 
-// TODO: Improve title acceptance logic, make a format for title
+// TODO: Improve title acceptance logic, make a format for title: validate_title() -> String
 fn get_title() -> String {
     print!("Enter a title: ");
     io::stdout().flush().unwrap();
@@ -141,13 +182,27 @@ pub fn search_result(result_arr: Vec<search::Field>) {
     }
 
     input.clear();
-    print!(":: Display content (r) OR open in editor (w)? [R/w] ");
+    print!(":: Display content (r) OR open in editor (w) [Rw]? ");
     io::stdout().flush().unwrap();
     io::stdin().read_line(&mut input).expect("  Error reading!");
 
     match input.trim() {
-        "r" | "R" | "" => storage::read_article(title),
+        "r" | "R" | "" => read_article(title),
         "w" | "W" => editor::open_editor(title),
         _ => println!("  Invalid input!"),
+    }
+}
+
+fn read_article(title: String) {
+    let path_to_file = storage::get_hey_notes_dir().join(title);
+
+    let file_content = fs::read_to_string(path_to_file);
+    match file_content {
+        Ok(s) => {
+            println!("\n{}", s);
+        }
+        Err(_) => {
+            eprintln!("Couldn't read file contents");
+        }
     }
 }

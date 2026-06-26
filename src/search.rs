@@ -11,12 +11,12 @@ pub fn search(s: String) {
     let binding = s.to_lowercase();
     let search_tokens: Vec<&str> = binding.split(' ').collect();
 
-    let titles: Vec<String> = storage::get_note_titles();
+    let titles: Vec<String> = storage::get_note_titles(storage::get_hey_notes_dir());
     let mut result: Vec<Field> = Vec::new();
 
     for title in titles {
         let file = title.clone();
-        let binding: Vec<&str> = title.split(".txt").collect();
+        let binding: Vec<&str> = title.split(".").collect();
         let title_tokens: Vec<&str> = binding[0].split('_').collect();
         let mut count = 0;
 

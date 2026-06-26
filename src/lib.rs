@@ -1,6 +1,7 @@
 pub mod cli;
 pub mod docs;
 pub mod editor;
+pub mod import;
 pub mod search;
 pub mod storage;
 
