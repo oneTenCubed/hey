@@ -23,7 +23,8 @@ pub fn import(levels: u8, ignore_tokens: HashSet<&str>, confirm: bool, overwrite
     let mut counter = 0;
 
     for title in titles {
-        if !old_path.is_file() || title.chars().nth(0) == Some('.') {
+        let old_location = old_path.join(&title);
+        if !old_location.is_file() || title.chars().nth(0) == Some('.') {
             continue;
         }
 
@@ -39,8 +40,6 @@ pub fn import(levels: u8, ignore_tokens: HashSet<&str>, confirm: bool, overwrite
         }
 
         let new_title = get_new_title(tokens.clone(), title.clone());
-
-        let old_location = old_path.join(&title);
         let new_location = new_path.join(&new_title);
 
         let keywords: Vec<&str> = new_title.split('.').collect();
