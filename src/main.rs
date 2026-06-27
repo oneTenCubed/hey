@@ -1,7 +1,7 @@
-use oneTenCubed_hey::{cli, storage};
+use oneTenCubed_hey::{command, storage};
 
 fn main() {
     storage::initialize_storage();
 
-    cli::dispatcher();
+    command::dispatcher();
 }

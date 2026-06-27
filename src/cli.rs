@@ -1,114 +1,12 @@
-use crate::{app::fatal, docs, editor, import, search, storage};
+use crate::{app::fatal, editor, search, storage};
 use std::{
-    collections::HashSet,
-    env, fs,
+    fs,
     io::{self, Write},
 };
 
-// TODO: new module for parsing and dispatching
-pub fn dispatcher() {
-    let args: Vec<String> = env::args().collect();
-
-    let _invoke = &args[0];
-    // Maybe needed in the future, like warnings for using deprecated invoke commands
-
-    if args.len() < 2 {
-        docs::help();
-        return;
-    }
-    let args: Vec<String> = args[1..].to_vec();
-
-    if args[0] == "." || args[0] == "--add" {
-        let title = if args.len() > 1 {
-            args[1..].join(" ")
-        } else {
-            get_title()
-        };
-
-        storage::new_article(title);
-    } else if &'-'
-        == match &args[0].chars().nth(0) {
-            Some(val) => val,
-            _ => &'+',
-        }
-    {
-        match args[0].as_str() {
-            "-h" | "--help" => {
-                docs::help();
-            }
-            "-v" | "--version" => {
-                docs::version();
-            }
-            "--help-verbose" => {
-                docs::help_verbose();
-            }
-            "-i" | "--import" | "-ic" | "--import-confirm" => {
-                // TODO: add an --overwrite flag
-                let mut level_flag_index = None;
-                let mut ignore_flag_index = None;
-
-                for (index, arg) in args.iter().enumerate() {
-                    if arg == "--ignore" {
-                        ignore_flag_index = Some(index);
-                    } else if arg == "-l" || arg == "--levels" {
-                        level_flag_index = Some(index);
-                    }
-                }
-
-                import::import(
-                    match level_flag_index {
-                        Some(index) => {
-                            let level = &args[index + 1];
-                            let level: u8 = level.parse().expect("  Invalid level!");
-
-                            level
-                        }
-                        None => 0,
-                    },
-                    match ignore_flag_index {
-                        Some(index) => {
-                            let mut set = HashSet::new();
-                            if ignore_flag_index > level_flag_index {
-                                for arg in &args[(index + 1)..] {
-                                    set.insert(&arg[..]);
-                                }
-                            }
-                            set
-                        }
-                        None => HashSet::new(),
-                    },
-                    match args[0].as_str() {
-                        "-i" | "--import" => false,
-                        "-ic" | "--import-confirm" => true,
-                        _ => {
-                            unreachable!();
-                        }
-                    },
-                    true, // TODO: implement overwrite
-                );
-            }
-            /*"-l" => {
-                todo!("Link functionality coming soon!");
-            }
-            "-z" => {
-                todo!("Fuzzy searching coming soon!");
-            }
-            "-s" => {
-                todo!("Synonym/abbrevation searching coming soon!");
-            }*/
-            _ => {
-                println!("Invalid flag!\n");
-                docs::help();
-            }
-        }
-    } else {
-        search::search(args.join(" "));
-    }
-}
-
 // TODO: Improve title acceptance logic, make a format for title: validate_title() -> String
-fn get_title() -> String {
-    print!("Enter a title: ");
+pub fn get_title() -> String {
+    print!("  Enter a title: ");
     io::stdout().flush().unwrap();
 
     let mut title = String::new();

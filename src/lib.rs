@@ -1,4 +1,5 @@
 pub mod cli;
+pub mod command;
 pub mod docs;
 pub mod editor;
 pub mod import;

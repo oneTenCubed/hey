@@ -82,8 +82,7 @@ pub fn new_article(title: String) {
         io::stdin().read_line(&mut input).expect("Error reading!");
 
         open_editor_flag = match &(input.trim())[..] {
-            "n" => false,
-            "N" => false,
+            "n" | "N" | "q" | "Q" => false,
             _ => true,
         }
     }

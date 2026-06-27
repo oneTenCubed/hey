@@ -56,12 +56,12 @@ pub fn import(levels: u8, ignore_tokens: HashSet<&str>, confirm: bool, overwrite
 
             print!(
                 "{}\n:: {} file (y) OR edit keywords (e) [Yen]? ",
-                if overwrite && file_already_exist {
+                if !overwrite && file_already_exist {
                     "\n  File with matching keywords already exist!"
                 } else {
                     ""
                 },
-                if overwrite && file_already_exist {
+                if !overwrite && file_already_exist {
                     "Overwrite"
                 } else {
                     "Import"
@@ -93,7 +93,7 @@ pub fn import(levels: u8, ignore_tokens: HashSet<&str>, confirm: bool, overwrite
             "q" => {
                 break;
             }
-            "e" => {} // TODO: implement confirm mode / edit keywords
+            "e" => todo!("keyword editor"), // TODO: implement confirm mode / edit keywords
             "n" => {
                 println!("Skipping file...");
                 continue;
