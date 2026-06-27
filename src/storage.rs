@@ -2,7 +2,7 @@ use crate::{app::fatal, editor};
 use dirs;
 use std::{
     fs::{self, DirBuilder},
-    io::{self, Write},
+    io::{self, Read, Write},
     path::PathBuf,
 };
 
@@ -88,7 +88,7 @@ pub fn new_article(title: String) {
     }
 
     if open_editor_flag {
-        editor::open_editor(title);
+        editor::open_editor(get_hey_notes_dir().join(title));
     }
 }
 
@@ -125,4 +125,51 @@ pub fn get_note_titles(path_to_notes: PathBuf) -> Vec<String> {
     }
 
     titles
+}
+
+pub fn enumerate_kw_editor_file(path_to_file: PathBuf, data: Vec<&str>) -> bool {
+    let mut file = match fs::File::create(path_to_file) {
+        Ok(file) => file,
+        Err(_) => {
+            eprintln!("Unable to enumerate editor file with keywords!");
+            return false;
+        }
+    };
+
+    for keyword in data {
+        let _ = file.write_fmt(format_args!("{}\n", keyword));
+    }
+
+    true
+}
+
+pub fn read_kw_editor_file(path_to_file: PathBuf) -> Vec<String> {
+    let mut file = match fs::OpenOptions::new().read(true).open(path_to_file) {
+        Ok(file) => file,
+        Err(_) => {
+            eprintln!("Unable to read editor file with keywords!");
+            return Vec::new();
+        }
+    };
+
+    let mut data = String::new();
+    let _ = file.read_to_string(&mut data);
+
+    let mut keywords = Vec::new();
+    for kw in data.trim().split("\n") {
+        keywords.push(kw.to_string());
+    }
+    keywords.sort();
+
+    keywords
+}
+
+pub fn copy_file(old_location: PathBuf, new_location: PathBuf) {
+    // TODO: handle errors like disk full, permission denied, ro destination etc...
+    let status = fs::copy(old_location, new_location);
+
+    match status {
+        Ok(_) => (),
+        Err(err) => fatal(format!("Error occurred: {}", err).as_str()),
+    }
 }

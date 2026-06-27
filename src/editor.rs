@@ -1,5 +1,4 @@
-use crate::storage;
-use std::{env, process};
+use std::{env, path::PathBuf, process};
 
 fn get_editor() -> String {
     let default: String;
@@ -16,9 +15,7 @@ fn get_editor() -> String {
         .unwrap_or(default)
 }
 
-pub fn open_editor(title: String) {
-    let path_to_file = storage::get_hey_notes_dir().join(title);
-
+pub fn open_editor(path_to_file: PathBuf) {
     let editor = get_editor();
 
     let _cmnd = match process::Command::new(editor).arg(path_to_file).status() {

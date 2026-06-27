@@ -89,7 +89,7 @@ pub fn search_result(result_arr: Vec<search::Field>) {
 
     match input.trim() {
         "r" | "R" | "" => read_article(title),
-        "w" | "W" => editor::open_editor(title),
+        "w" | "W" => editor::open_editor(storage::get_hey_notes_dir().join(title)),
         _ => println!("  Invalid input!"),
     }
 }
