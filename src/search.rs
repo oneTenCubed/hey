@@ -1,9 +1,11 @@
+use std::path::PathBuf;
+
 use crate::{app::fatal, cli, storage};
 
 #[derive(Clone)]
 pub struct Field {
     pub matches: i32,
-    pub file: String,
+    pub file: PathBuf,
     pub display_name: String,
 }
 
@@ -11,14 +13,26 @@ pub fn search(s: String) {
     let binding = s.to_lowercase();
     let search_tokens: Vec<&str> = binding.split(' ').collect();
 
-    let mut titles: Vec<String> = storage::get_note_titles(storage::get_hey_notes_dir());
-    titles.append(&mut storage::get_note_titles(storage::get_hey_imports_dir()));
+    let mut titles: Vec<PathBuf> = storage::get_note_titles(storage::get_hey_dir("notes"));
+    titles.append(&mut storage::get_note_titles(storage::get_hey_dir(
+        "imports",
+    )));
     let mut result: Vec<Field> = Vec::new();
 
     for title in titles {
         let file = title.clone();
-        let binding: Vec<&str> = title.split(".").collect(); // TODO: use file_stem()
-        let title_tokens: Vec<&str> = binding[0].split('_').collect();
+        let binding: &str = match title.file_stem() {
+            Some(name) => match name.to_str() {
+                Some(string) => string,
+                None => {
+                    fatal("Unexpected error occurred while parsing file name!");
+                }
+            },
+            None => {
+                fatal("Unexpected file name!");
+            }
+        };
+        let title_tokens: Vec<&str> = binding.split('_').collect();
         let mut count = 0;
 
         for title_token in &title_tokens {

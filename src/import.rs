@@ -18,12 +18,15 @@ pub fn import(
             fatal("Unable to calculate the current working directory!");
         }
     };
-    let imports_dir: PathBuf = storage::get_hey_imports_dir();
+    let imports_dir: PathBuf = storage::get_hey_dir("imports");
 
     let tokens = tokenize(src_dir.clone(), levels, ignore_tokens);
     let mut titles: Vec<String> = Vec::new();
     if files.is_empty() {
-        titles = storage::get_note_titles(src_dir.clone());
+        let title_paths = storage::get_note_titles(src_dir.clone());
+        for path in title_paths {
+            titles.push(path.to_string_lossy().to_string());
+        }
     } else {
         for file in files {
             titles.push(file.to_string());

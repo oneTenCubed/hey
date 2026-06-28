@@ -18,7 +18,7 @@ fn get_hey_local_data_dir() -> PathBuf {
 }
 
 // TODO: merge get_hey_notes_dir() and get_hey_imports_dir()
-pub fn get_hey_notes_dir() -> PathBuf {
+/*pub fn get_hey_notes_dir() -> PathBuf {
     let notes_dir = get_hey_local_data_dir().join("notes");
 
     if notes_dir.is_dir() {
@@ -35,6 +35,16 @@ pub fn get_hey_imports_dir() -> PathBuf {
         imports_dir
     } else {
         fatal("Unable to find imports data directory!");
+    }
+}*/
+
+pub fn get_hey_dir(title: &str) -> PathBuf {
+    let directory = get_hey_local_data_dir().join(title);
+
+    if directory.is_dir() {
+        directory
+    } else {
+        fatal(format!("Unable to find {} data directory!", title).as_str());
     }
 }
 
@@ -72,7 +82,7 @@ pub fn new_article(title: String) {
     let mut title: String = title.join("_");
     title.push_str(".txt"); // TODO: also support md on request
 
-    let path_to_file = get_hey_notes_dir().join(&title);
+    let path_to_file = get_hey_dir("notes").join(&title);
 
     let mut open_editor_flag = true;
     if path_to_file.is_file() {
@@ -89,12 +99,12 @@ pub fn new_article(title: String) {
     }
 
     if open_editor_flag {
-        editor::open_editor(get_hey_notes_dir().join(title));
+        editor::open_editor(get_hey_dir("notes").join(title));
     }
 }
 
-pub fn get_note_titles(path_to_notes: PathBuf) -> Vec<String> {
-    let mut titles: Vec<String> = Vec::new();
+pub fn get_note_titles(path_to_notes: PathBuf) -> Vec<PathBuf> {
+    let mut titles: Vec<PathBuf> = Vec::new();
 
     for entry in match fs::read_dir(&path_to_notes) {
         Ok(entry) => entry,
@@ -112,7 +122,8 @@ pub fn get_note_titles(path_to_notes: PathBuf) -> Vec<String> {
             }
         };
 
-        let entry = entry.path();
+        titles.push(entry.path());
+        /*let entry = entry.path();
         let entry = entry.file_name();
         let entry = match entry {
             Some(entry) => match entry.to_str() {
@@ -122,7 +133,7 @@ pub fn get_note_titles(path_to_notes: PathBuf) -> Vec<String> {
             _ => continue,
         };
 
-        titles.push(entry.to_string());
+        titles.push(entry.to_string());*/
     }
 
     titles

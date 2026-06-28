@@ -1,7 +1,8 @@
-use crate::{app::fatal, editor, search, storage};
+use crate::{app::fatal, editor, search};
 use std::{
     fs,
     io::{self, Write},
+    path::PathBuf,
 };
 
 // TODO: Improve title acceptance logic, make a format for title: validate_title() -> String
@@ -23,14 +24,14 @@ pub fn get_title() -> String {
 
 pub fn search_result(result_arr: Vec<search::Field>) {
     let mut input = String::new();
-    let title: String;
+    let path_to_file: PathBuf;
 
     if result_arr.is_empty() {
         println!("  No matches!");
         return;
     } else if result_arr.len() == 1 {
         println!("  Exactly one match found: {}", result_arr[0].display_name);
-        title = result_arr[0].file.clone();
+        path_to_file = result_arr[0].file.clone();
     } else {
         for (index, field) in result_arr.iter().enumerate() {
             println!("  {}. {}", index + 1, field.display_name);
@@ -67,7 +68,7 @@ pub fn search_result(result_arr: Vec<search::Field>) {
 
             match n <= result_arr.len() {
                 true => {
-                    title = result_arr[n - 1].file.clone();
+                    path_to_file = result_arr[n - 1].file.clone();
                 }
                 false => {
                     eprintln!(
@@ -88,15 +89,14 @@ pub fn search_result(result_arr: Vec<search::Field>) {
     io::stdin().read_line(&mut input).expect("  Error reading!");
 
     match input.trim() {
-        "r" | "R" | "" => read_article(title),
-        "w" | "W" => editor::open_editor(storage::get_hey_notes_dir().join(title)),
+        "r" | "R" | "" => read_article(path_to_file),
+        "w" | "W" => editor::open_editor(path_to_file),
+        "q" | "Q" => return,
         _ => println!("  Invalid input!"),
     }
 }
 
-fn read_article(title: String) {
-    let path_to_file = storage::get_hey_notes_dir().join(title);
-
+fn read_article(path_to_file: PathBuf) {
     let file_content = fs::read_to_string(path_to_file);
     match file_content {
         Ok(s) => {
