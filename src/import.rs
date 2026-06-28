@@ -76,7 +76,6 @@ pub fn import(
             overwrite,
             file_already_exist,
         );
-        println!("{:?}", keywords);
 
         if file_already_exist && !overwrite {
             counter_pretty_print_new_line = true;
