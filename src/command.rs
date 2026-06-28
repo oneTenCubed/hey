@@ -107,7 +107,7 @@ fn parse_import(args: Vec<String>) {
         None => (),
     }
 
-    if args[1].chars().nth(0) != Some('-') {
+    if args.len() > 1 && args[1].chars().nth(0) != Some('-') {
         for arg in &args[1..] {
             if arg.chars().nth(0) == Some('-') {
                 break;

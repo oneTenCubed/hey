@@ -25,7 +25,14 @@ pub fn import(
     if files.is_empty() {
         let title_paths = storage::get_note_titles(src_dir.clone());
         for path in title_paths {
-            titles.push(path.to_string_lossy().to_string());
+            let path_name = match path.file_name() {
+                Some(name) => name,
+                None => {
+                    eprintln!("Error parsing file name!");
+                    continue;
+                }
+            };
+            titles.push(path_name.to_string_lossy().to_string());
         }
     } else {
         for file in files {
@@ -69,6 +76,7 @@ pub fn import(
             overwrite,
             file_already_exist,
         );
+        println!("{:?}", keywords);
 
         if file_already_exist && !overwrite {
             counter_pretty_print_new_line = true;
