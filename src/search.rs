@@ -11,7 +11,8 @@ pub fn search(s: String) {
     let binding = s.to_lowercase();
     let search_tokens: Vec<&str> = binding.split(' ').collect();
 
-    let titles: Vec<String> = storage::get_note_titles(storage::get_hey_notes_dir());
+    let mut titles: Vec<String> = storage::get_note_titles(storage::get_hey_notes_dir());
+    titles.append(&mut storage::get_note_titles(storage::get_hey_imports_dir()));
     let mut result: Vec<Field> = Vec::new();
 
     for title in titles {

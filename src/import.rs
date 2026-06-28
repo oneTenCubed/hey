@@ -1,12 +1,17 @@
-use crate::{app::fatal, editor, storage};
+use crate::{app::fatal, cli, editor, storage};
 use std::{
     collections::HashSet,
     env::{self, temp_dir},
-    io::{self, Write},
     path::PathBuf,
 };
 
-pub fn import(levels: u8, ignore_tokens: HashSet<&str>, confirm: bool, overwrite: bool) {
+pub fn import(
+    levels: u8,
+    ignore_tokens: HashSet<&str>,
+    confirm: bool,
+    overwrite: bool,
+    files: HashSet<&str>,
+) {
     let src_dir: PathBuf = match env::current_dir() {
         Ok(path) => path,
         Err(_) => {
@@ -16,7 +21,15 @@ pub fn import(levels: u8, ignore_tokens: HashSet<&str>, confirm: bool, overwrite
     let imports_dir: PathBuf = storage::get_hey_imports_dir();
 
     let tokens = tokenize(src_dir.clone(), levels, ignore_tokens);
-    let titles: Vec<String> = storage::get_note_titles(src_dir.clone());
+    let mut titles: Vec<String> = Vec::new();
+    if files.is_empty() {
+        titles = storage::get_note_titles(src_dir.clone());
+    } else {
+        for file in files {
+            titles.push(file.to_string());
+        }
+    }
+
     let old_path = src_dir.clone();
     let new_path = imports_dir.clone();
     let mut counter = 0;
@@ -46,7 +59,7 @@ pub fn import(levels: u8, ignore_tokens: HashSet<&str>, confirm: bool, overwrite
         let keywords: Vec<&str> = new_title.split('.').collect();
         let keywords: Vec<&str> = keywords[0].split('_').collect();
         let file_already_exist = if new_location.is_file() { true } else { false };
-        let input = import_confirmation(
+        let input = cli::import_confirmation(
             title,
             keywords.clone(),
             confirm,
@@ -174,52 +187,4 @@ fn get_new_title(mut curr_tokens: HashSet<String>, title: String) -> String {
     };
 
     new_title
-}
-
-fn import_confirmation(
-    title: String,
-    keywords: Vec<&str>,
-    confirm: bool,
-    overwrite: bool,
-    file_already_exist: bool,
-) -> String {
-    let mut input = String::new();
-    let mut matching_kw_flag = false;
-
-    if confirm {
-        println!("\n  Importing file \"{}\" with keywords:", &title);
-        print!("\t");
-        io::stdout().flush().unwrap();
-    } else if !overwrite && file_already_exist {
-        println!("\n  File with matching keywords already exist!");
-        print!("    Keywords: ");
-        io::stdout().flush().unwrap();
-        matching_kw_flag = true;
-    }
-
-    if confirm || (!overwrite && file_already_exist) {
-        for keyword in &keywords {
-            print!("\"{}\" ", keyword);
-        }
-        io::stdout().flush().unwrap();
-
-        print!(
-            "{}\n:: {} file (y) OR edit keywords (e) [Yen]? ",
-            if !overwrite && file_already_exist && !matching_kw_flag {
-                "\n  File with matching keywords already exist!"
-            } else {
-                ""
-            },
-            if !overwrite && file_already_exist {
-                "Overwrite"
-            } else {
-                "Import"
-            }
-        );
-        io::stdout().flush().unwrap();
-        input.clear();
-        io::stdin().read_line(&mut input).expect("  Error reading!");
-    }
-
-    input
 }

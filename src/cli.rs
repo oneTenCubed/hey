@@ -107,3 +107,51 @@ fn read_article(title: String) {
         }
     }
 }
+
+pub fn import_confirmation(
+    title: String,
+    keywords: Vec<&str>,
+    confirm: bool,
+    overwrite: bool,
+    file_already_exist: bool,
+) -> String {
+    let mut input = String::new();
+    let mut matching_kw_flag = false;
+
+    if confirm {
+        println!("\n  Importing file \"{}\" with keywords:", &title);
+        print!("\t");
+        io::stdout().flush().unwrap();
+    } else if !overwrite && file_already_exist {
+        println!("\n  File with matching keywords already exist!");
+        print!("    Keywords: ");
+        io::stdout().flush().unwrap();
+        matching_kw_flag = true;
+    }
+
+    if confirm || (!overwrite && file_already_exist) {
+        for keyword in &keywords {
+            print!("\"{}\" ", keyword);
+        }
+        io::stdout().flush().unwrap();
+
+        print!(
+            "{}\n:: {} file (y) OR edit keywords (e) [Yen]? ",
+            if !overwrite && file_already_exist && !matching_kw_flag {
+                "\n  File with matching keywords already exist!"
+            } else {
+                ""
+            },
+            if !overwrite && file_already_exist {
+                "Overwrite"
+            } else {
+                "Import"
+            }
+        );
+        io::stdout().flush().unwrap();
+        input.clear();
+        io::stdin().read_line(&mut input).expect("  Error reading!");
+    }
+
+    input
+}

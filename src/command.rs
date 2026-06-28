@@ -42,13 +42,7 @@ pub fn dispatcher() {
             "-i" | "--import" | "-ic" | "--import-confirm" => {
                 parse_import(args);
             }
-            /*"-l" => {
-                todo!("Link functionality coming soon!");
-            }
-            "-z" => {
-                todo!("Fuzzy searching coming soon!");
-            }
-            "-s" => {
+            /*"-s" => {
                 todo!("Synonym/abbrevation searching coming soon!");
             }*/
             _ => {
@@ -66,6 +60,7 @@ struct ImportArgs<'a> {
     overwrite: bool,
     ignore: HashSet<&'a str>,
     levels: u8,
+    files: HashSet<&'a str>,
 }
 
 fn parse_import(args: Vec<String>) {
@@ -74,6 +69,7 @@ fn parse_import(args: Vec<String>) {
         overwrite: false,
         ignore: HashSet::new(),
         levels: 0,
+        files: HashSet::new(),
     };
 
     let mut ignore_flag_index = None;
@@ -88,13 +84,18 @@ fn parse_import(args: Vec<String>) {
                 }
             }
             "--overwrite" => state.overwrite = true,
-            "--ignore" => ignore_flag_index = Some(index),
+            "--ignore" => ignore_flag_index = Some(index + 1),
             _ => (),
         }
     }
 
     match ignore_flag_index {
         Some(index) => {
+            if args.len() <= index || args[index].chars().nth(0) == Some('-') {
+                eprintln!("Ignore field is empty. Nothing ignored...");
+                ()
+            }
+
             for arg in &args[index..] {
                 if arg.chars().nth(0) == Some('-') {
                     break;
@@ -106,5 +107,21 @@ fn parse_import(args: Vec<String>) {
         None => (),
     }
 
-    import::import(state.levels, state.ignore, state.confirm, state.overwrite);
+    if args[1].chars().nth(0) != Some('-') {
+        for arg in &args[1..] {
+            if arg.chars().nth(0) == Some('-') {
+                break;
+            }
+
+            state.files.insert(arg);
+        }
+    }
+
+    import::import(
+        state.levels,
+        state.ignore,
+        state.confirm,
+        state.overwrite,
+        state.files,
+    );
 }

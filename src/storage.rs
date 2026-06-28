@@ -17,6 +17,7 @@ fn get_hey_local_data_dir() -> PathBuf {
     }
 }
 
+// TODO: merge get_hey_notes_dir() and get_hey_imports_dir()
 pub fn get_hey_notes_dir() -> PathBuf {
     let notes_dir = get_hey_local_data_dir().join("notes");
 
