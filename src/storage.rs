@@ -17,27 +17,6 @@ fn get_hey_local_data_dir() -> PathBuf {
     }
 }
 
-// TODO: merge get_hey_notes_dir() and get_hey_imports_dir()
-/*pub fn get_hey_notes_dir() -> PathBuf {
-    let notes_dir = get_hey_local_data_dir().join("notes");
-
-    if notes_dir.is_dir() {
-        notes_dir
-    } else {
-        fatal("Unable to find notes data directory!");
-    }
-}
-
-pub fn get_hey_imports_dir() -> PathBuf {
-    let imports_dir = get_hey_local_data_dir().join("imports");
-
-    if imports_dir.is_dir() {
-        imports_dir
-    } else {
-        fatal("Unable to find imports data directory!");
-    }
-}*/
-
 pub fn get_hey_dir(title: &str) -> PathBuf {
     let directory = get_hey_local_data_dir().join(title);
 
@@ -78,7 +57,8 @@ pub fn initialize_storage() {
 }
 
 pub fn new_article(title: String) {
-    let title: Vec<&str> = title.split(' ').collect();
+    let mut title: Vec<&str> = title.split(' ').collect();
+    title.sort();
     let mut title: String = title.join("_");
     title.push_str(".txt"); // TODO: also support md on request
 
