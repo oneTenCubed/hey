@@ -8,9 +8,11 @@ use std::{
 pub fn import(
     levels: u8,
     ignore_tokens: HashSet<&str>,
+    add_tokens: HashSet<String>,
     confirm: bool,
     overwrite: bool,
     files: HashSet<&str>,
+    add_before_ignore: bool,
 ) {
     let src_dir: PathBuf = match env::current_dir() {
         Ok(path) => path,
@@ -20,7 +22,13 @@ pub fn import(
     };
     let imports_dir: PathBuf = storage::get_hey_dir("imports");
 
-    let tokens = tokenize(src_dir.clone(), levels, ignore_tokens);
+    let tokens = tokenize(
+        src_dir.clone(),
+        levels,
+        add_tokens,
+        ignore_tokens,
+        add_before_ignore,
+    );
     let mut titles: Vec<String> = Vec::new();
     if files.is_empty() {
         let title_paths = storage::get_note_titles(src_dir.clone());
@@ -131,7 +139,13 @@ pub fn import(
     );
 }
 
-fn tokenize(src_dir: PathBuf, levels: u8, ignore_tokens: HashSet<&str>) -> HashSet<String> {
+fn tokenize(
+    src_dir: PathBuf,
+    levels: u8,
+    add_tokens: HashSet<String>,
+    ignore_tokens: HashSet<&str>,
+    add_before_ignore: bool,
+) -> HashSet<String> {
     let mut tokens: HashSet<String> = HashSet::new();
     let mut file_tokens: Vec<&std::path::Path> = src_dir.ancestors().collect();
     file_tokens.pop();
@@ -154,6 +168,14 @@ fn tokenize(src_dir: PathBuf, levels: u8, ignore_tokens: HashSet<&str>) -> HashS
             }
         };
 
+        if add_before_ignore {
+            for token in &add_tokens {
+                if let None = ignore_tokens.get(token.as_str()) {
+                    tokens.insert(token.to_lowercase().to_string());
+                }
+            }
+        }
+
         if let None = ignore_tokens.get(&token) {
             let token_split: Vec<&str> = token.split('_').collect();
             for token in token_split {
@@ -161,6 +183,10 @@ fn tokenize(src_dir: PathBuf, levels: u8, ignore_tokens: HashSet<&str>) -> HashS
                     tokens.insert(token.to_lowercase().to_string());
                 }
             }
+        }
+
+        if !add_before_ignore {
+            tokens.extend(add_tokens.clone());
         }
     }
 

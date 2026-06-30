@@ -103,17 +103,6 @@ pub fn get_note_titles(path_to_notes: PathBuf) -> Vec<PathBuf> {
         };
 
         titles.push(entry.path());
-        /*let entry = entry.path();
-        let entry = entry.file_name();
-        let entry = match entry {
-            Some(entry) => match entry.to_str() {
-                Some(entry) => entry,
-                _ => continue,
-            },
-            _ => continue,
-        };
-
-        titles.push(entry.to_string());*/
     }
 
     titles

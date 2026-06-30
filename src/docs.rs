@@ -16,7 +16,7 @@ pub fn help() {
     println!("    --help-verbose\t\tShow a more descriptive help message");
 
     println!("\n  NOTE CREATION");
-    println!("    . , --add [keywords...]\tAdd a new note (e.g. 'hey . rust macros')");
+    println!("    . , --new [keywords...]\tAdd a new note (e.g. 'hey . rust macros')");
 
     println!("\n  SEARCH");
     println!("    [keywords...]\t\tSearch for notes matching the given keywords");
@@ -60,7 +60,7 @@ pub fn help_verbose() {
     println!("    -v, --version");
     println!("        Display version information and exit.");
     println!();
-    println!("    ., --add [keywords...]");
+    println!("    ., --new [keywords...]");
     println!("        Create a new note using the supplied keywords");
     println!("        as its title.\n");
 
