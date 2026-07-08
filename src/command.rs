@@ -42,11 +42,14 @@ pub fn dispatcher() {
             "-i" | "--import" | "-ic" | "--import-confirm" => {
                 parse_import(args);
             }
-            /*"-s" => {
+            "-s" | "--search" => {
+                todo!("non-interactive search");
+            }
+            /*"-a" => {
                 todo!("Synonym/abbrevation searching coming soon!");
             }*/
             _ => {
-                println!("Invalid flag!\n");
+                eprintln!("Invalid flag!\n");
                 docs::help();
             }
         }

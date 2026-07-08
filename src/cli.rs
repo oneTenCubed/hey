@@ -22,6 +22,8 @@ pub fn get_title() -> String {
     title
 }
 
+// TODO: rename to interactive_search_result() and add another non_interactive_search_result() for
+// --search flag
 pub fn search_result(result_arr: Vec<search::Field>) {
     let mut input = String::new();
     let path_to_file: PathBuf;
