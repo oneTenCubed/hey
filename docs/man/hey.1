@@ -5,7 +5,7 @@
 .nh
 .ad l
 .\" Begin generated content:
-.TH "hey" "1" "2026-06-30" "hey(1)" "Documentation Manual"
+.TH "hey" "1" "2026-07-12" "hey(1)" "Documentation Manual"
 .PP
 .SH NAME
 .PP
@@ -93,6 +93,34 @@ Create a new note using the supplied keywords as its title.\&
 Example:
 .br
 	hey .\& rust ownership
+.PP
+.SH IMPORT
+.PP
+.SS -i, --import [files...]
+.PP
+Copy external notes to hey'\&s local directory to enable it'\&s services.\&
+.PP
+.SS -ic, --import-confirm [files...]
+.PP
+Copy external notes to hey'\&s local directory to enable it'\&s services.\& Asks for confirmation each time it copies a suitable file.\&
+.PP
+Specify file name(s) after the import flag to import them else, scans the current directory and imports all suitable files.\&
+.PP
+   \fB-l, --levels n\fR
+.br
+     Use this flag and give a number as an argument to add the specified number of ancestor directory names as keywords.\&
+.PP
+   \fB--overwrite\fR
+.br
+     If a file generates keywords that mathes an existing file, use this flag to overwrite without confirmation.\&
+.PP
+   \fB--ignore [keywords.\&.\&.\&]\fR
+.br
+     Specify the words to be ignored during keyword generation.\&
+.PP
+   \fB--add [keywords.\&.\&.\&]\fR
+.br
+     Specify the words to be added during keyword generation.\&
 .PP
 .SH SEARCH
 .PP

@@ -21,6 +21,11 @@ pub fn help() {
     println!("\n  SEARCH");
     println!("    [keywords...]\t\tSearch for notes matching the given keywords");
 
+    println!("\n  IMPORT");
+    println!(
+        "    -i, --import [files...]\tCopy external notes to hey's local directory to enable it's services"
+    );
+
     println!("\n  ENVIRONMENT VARIABLE");
     println!("    HEY_EDITOR\t\t\tEditor command used by hey (overrides VISUAL and EDITOR)");
 
@@ -70,6 +75,38 @@ pub fn help_verbose() {
     println!();
     println!("    Search results are ranked according to the number");
     println!("    of matching title keywords.\n");
+
+    println!("IMPORT");
+    println!("    -i, --import [files...]");
+    println!("        Copy external notes to hey's local directory");
+    println!("        to enable it's services.");
+    println!();
+    println!("    -ic, --import-confirm [files...]");
+    println!("        Copy external notes to hey's local directory");
+    println!("        to enable it's services. Asks for confirmation");
+    println!("        each time it copies a suitable file.");
+    println!();
+    println!("    Specify file name(s) after the import flag");
+    println!("    to import them else, scans the current directory");
+    println!("    and imports all suitable files.");
+    println!();
+    println!("    -l, --levels");
+    println!("        Use this flag and give a number as an argument");
+    println!("        to add the specified number of ancestor directory");
+    println!("        names as keywords.");
+    println!();
+    println!("    --overwrite");
+    println!("        If a file generates keywords that mathes an");
+    println!("        existing file, use this flag to overwrite");
+    println!("        without confirmation.");
+    println!();
+    println!("    --ignore");
+    println!("        Specify the words to be ignored during keyword");
+    println!("        generation.");
+    println!();
+    println!("    --add");
+    println!("        Specify the words to be added during keyword");
+    println!("        generation.\n");
 
     println!("ENVIRONMENT");
     println!("    HEY_EDITOR");

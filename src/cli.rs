@@ -138,7 +138,7 @@ pub fn import_confirmation(
         io::stdout().flush().unwrap();
 
         print!(
-            "{}\n:: {} file (y) OR edit keywords (e) [Yen]? ",
+            "{}\n:: {} file (y) OR edit keywords (e) [yeN]? ",
             if !overwrite && file_already_exist && !matching_kw_flag {
                 "\n  File with matching keywords already exist!"
             } else {

@@ -1,10 +1,9 @@
 use crate::{app::fatal, cli, editor, storage};
-use std::{
-    collections::HashSet,
-    env::{self, temp_dir},
-    path::PathBuf,
-};
+use std::{collections::HashSet, env, path::PathBuf};
 
+// TODO: resolve duplicate file names over notes and imports
+// maybe specify whether imported or not
+// make it into a feature
 pub fn import(
     levels: u8,
     ignore_tokens: HashSet<&str>,
@@ -76,7 +75,7 @@ pub fn import(
 
         let keywords: Vec<&str> = new_title.split('.').collect();
         let keywords: Vec<&str> = keywords[0].split('_').collect();
-        let file_already_exist = if new_location.is_file() { true } else { false };
+        let file_already_exist = new_location.is_file();
         let input = cli::import_confirmation(
             title,
             keywords.clone(),
@@ -94,7 +93,7 @@ pub fn import(
                 break;
             }
             "e" => {
-                let path_to_tmp_file = temp_dir().join("keyword_edit");
+                let path_to_tmp_file = env::temp_dir().join("keyword_edit");
 
                 if !storage::enumerate_kw_editor_file(path_to_tmp_file.clone(), keywords) {
                     continue;
@@ -116,13 +115,13 @@ pub fn import(
                 storage::copy_file(old_location, edited_location);
                 counter += 1;
             }
-            "n" => {
-                println!("Skipping file...");
-                continue;
-            }
-            _ => {
+            "y" => {
                 storage::copy_file(old_location, new_location);
                 counter += 1;
+            }
+            _ => {
+                println!("Skipping file...");
+                continue;
             }
         }
     }

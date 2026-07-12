@@ -24,7 +24,7 @@ hey aims to reduce this friction by making notes retrievable through keyword-bas
 * Simple and composable
 
 The original note files remain accessible without hey.
-[^1]:Although not guaranteed, should work with any regular(-) file
+[^1]:Currently only supports text (.txt) and markdown (.md) files
 ## Current Features
 
 ### Note Creation
@@ -32,10 +32,10 @@ The original note files remain accessible without hey.
 Run this command to add a note:
 
 ```bash
-hey .   # or hey . title word
+hey .   # OR hey . title word
 ```
 
-Create a new note by providing a title with matching keywords.
+Create a new note by providing a title with matching keywords. This operation adds the new note into `hey`'s local directory.
 
 The title acts as a collection of search keywords that can later be used to retrieve the note.
 
@@ -70,6 +70,14 @@ result:
 
 i.e, exact match scores higher
 
+### Import notes to hey
+
+`hey` is designed to only search notes locally within it's directory. As such, the import feature of `hey` makes a hard copy of the specified notes to it's local directory to enable searching of those notes. These notes are stored in a separate directory to the notes created using `--new`.
+
+#### Quirks:
+
+It is possible to have an imported note with matching keywords to that from the normal notes. As such, search results may show duplicate keywords. It is adviced to merge the two.
+
 ## Storage
 
 Notes are stored locally under:
@@ -91,12 +99,6 @@ Current versions store notes directly within hey-managed storage.
 
 * Note preview during search
 * Linking external notes through symbolic links
-* Importing existing notes into hey
-
-### Possible Future Improvements
-
-* Better note organization
-* Performance improvements where justified by real usage
 
 ## Non-Goals
 
@@ -123,10 +125,10 @@ To generate a man page for hey,
 2. Find the **docs** directory
 3. Open **hey.1** inside **man** directory
 4. Download raw file
-5. Find it in downloads, let: ~/downloads/hey.1
+5. Find it in downloads, let: ~/Downloads/hey.1
 6. Install to system's manpage db by running the command
 ```bash
-sudo install -Dm644 ~/downloads/hey.1 /usr/local/share/man/man1/hey.1
+sudo install -Dm644 ~/Downloads/hey.1 /usr/local/share/man/man1/hey.1
 ```
 
 Now running `man hey` produces a proper manpage for hey
@@ -213,7 +215,6 @@ alias name='$HOME/.cargo/bin/hey'
 
 - FreeBSD x86_64
     `hey` has been tested successfully in FreeBSD 14.3-RELEASE.
-    Found rustc version lag when rust is installed through the package manager. Install rustup to get the latest rustc version, `hey` requires rustc v1.95. See "Troubleshooting" to get rustup website link.
 
 - Android (Termux)
     `hey` has been tested successfully in Termux on Android 10 aarch64.
@@ -223,7 +224,7 @@ alias name='$HOME/.cargo/bin/hey'
 
 ## Project Status
 
-Current version: 0.3.6
+Current version: 0.4.0
 
 hey is a personal project built as part of learning Rust, systems programming, and software architecture.
 

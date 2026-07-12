@@ -1,6 +1,5 @@
-use std::path::PathBuf;
-
 use crate::{app::fatal, cli, storage};
+use std::path::PathBuf;
 
 #[derive(Clone)]
 pub struct Field {
