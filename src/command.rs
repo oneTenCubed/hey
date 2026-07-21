@@ -61,7 +61,7 @@ pub fn dispatcher() {
 struct ImportArgs<'a> {
     confirm: bool,
     overwrite: bool,
-    ignore: HashSet<&'a str>,
+    ignore: HashSet<String>,
     add: HashSet<String>,
     levels: u8,
     files: HashSet<&'a str>,
@@ -110,7 +110,7 @@ fn parse_import(args: Vec<String>) {
                     break;
                 }
 
-                state.ignore.insert(arg);
+                state.ignore.insert(arg.to_string());
             }
         }
         None => (),

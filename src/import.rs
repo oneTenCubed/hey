@@ -6,7 +6,7 @@ use std::{collections::HashSet, env, path::PathBuf};
 // make it into a feature
 pub fn import(
     levels: u8,
-    ignore_tokens: HashSet<&str>,
+    ignore_tokens: HashSet<String>,
     add_tokens: HashSet<String>,
     confirm: bool,
     overwrite: bool,
@@ -24,8 +24,8 @@ pub fn import(
     let tokens = tokenize(
         src_dir.clone(),
         levels,
-        add_tokens,
-        ignore_tokens,
+        add_tokens.clone(),
+        ignore_tokens.clone(),
         add_before_ignore,
     );
     let mut titles: Vec<String> = Vec::new();
@@ -70,7 +70,7 @@ pub fn import(
             None => "",
         };
 
-        let new_title = get_new_title(tokens.clone(), title.clone());
+        let new_title = get_new_title(tokens.clone(), title.clone(), ignore_tokens.clone());
         let new_location = new_path.join(&new_title);
 
         let keywords: Vec<&str> = new_title.split('.').collect();
@@ -105,7 +105,6 @@ pub fn import(
                 let binding = keywords.join("_");
                 let mut edited_location = new_path.join(binding);
                 edited_location.add_extension(extension);
-                println!("{:?}", edited_location);
 
                 if edited_location.is_file() {
                     eprintln!("  File with matching keywords already exists!\nSkipping file...");
@@ -142,12 +141,20 @@ fn tokenize(
     src_dir: PathBuf,
     levels: u8,
     add_tokens: HashSet<String>,
-    ignore_tokens: HashSet<&str>,
+    ignore_tokens: HashSet<String>,
     add_before_ignore: bool,
 ) -> HashSet<String> {
     let mut tokens: HashSet<String> = HashSet::new();
     let mut file_tokens: Vec<&std::path::Path> = src_dir.ancestors().collect();
     file_tokens.pop();
+
+    if add_before_ignore {
+        for token in &add_tokens {
+            if let None = ignore_tokens.get(token.as_str()) {
+                tokens.insert(token.to_lowercase().to_string());
+            }
+        }
+    }
 
     for (index, dir) in file_tokens.iter().enumerate() {
         if index as u8 >= levels {
@@ -167,32 +174,28 @@ fn tokenize(
             }
         };
 
-        if add_before_ignore {
-            for token in &add_tokens {
-                if let None = ignore_tokens.get(token.as_str()) {
-                    tokens.insert(token.to_lowercase().to_string());
-                }
-            }
-        }
-
-        if let None = ignore_tokens.get(&token) {
+        if let None = ignore_tokens.get(token) {
             let token_split: Vec<&str> = token.split('_').collect();
             for token in token_split {
-                if let None = ignore_tokens.get(&token) {
+                if let None = ignore_tokens.get(token) {
                     tokens.insert(token.to_lowercase().to_string());
                 }
             }
         }
+    }
 
-        if !add_before_ignore {
-            tokens.extend(add_tokens.clone());
-        }
+    if !add_before_ignore {
+        tokens.extend(add_tokens.clone());
     }
 
     tokens
 }
 
-fn get_new_title(mut curr_tokens: HashSet<String>, title: String) -> String {
+fn get_new_title(
+    mut curr_tokens: HashSet<String>,
+    title: String,
+    ignore_tokens: HashSet<String>,
+) -> String {
     let mut new_title = String::new();
 
     let title_tokens: Vec<&str> = title.split('.').collect();
@@ -202,7 +205,10 @@ fn get_new_title(mut curr_tokens: HashSet<String>, title: String) -> String {
     }
 
     let exhaustable_tokens = curr_tokens.clone();
-    let mut new_title_tokens: Vec<String> = exhaustable_tokens.into_iter().collect();
+    let mut new_title_tokens: Vec<String> = exhaustable_tokens
+        .difference(&ignore_tokens)
+        .cloned()
+        .collect();
     new_title_tokens.sort();
     let new_title_tokens = new_title_tokens.join("_");
     new_title.push_str(new_title_tokens.as_str());

@@ -117,7 +117,7 @@ pub fn import_confirmation(
     overwrite: bool,
     file_already_exist: bool,
 ) -> String {
-    let mut input = String::new();
+    let mut input = String::from("y");
     let mut matching_kw_flag = false;
 
     if confirm {
