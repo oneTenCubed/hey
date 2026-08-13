@@ -23,6 +23,7 @@ pub fn dispatcher() {
         };
 
         storage::new_article(title); // TODO: support ".md" through -md
+    // TODO: add a flag to set markdown as default format
     } else if &'-'
         == match &args[0].chars().nth(0) {
             Some(val) => val,

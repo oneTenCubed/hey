@@ -110,6 +110,7 @@ fn read_article(path_to_file: PathBuf) {
     }
 }
 
+// TODO: refactor to be more human friendly
 pub fn import_confirmation(
     title: String,
     keywords: Vec<&str>,
