@@ -110,7 +110,6 @@ fn read_article(path_to_file: PathBuf) {
     }
 }
 
-// TODO: refactor to be more human friendly
 pub fn import_confirmation(
     title: String,
     keywords: Vec<&str>,
@@ -118,42 +117,42 @@ pub fn import_confirmation(
     overwrite: bool,
     file_already_exist: bool,
 ) -> String {
-    let mut input = String::from("y");
-    let mut matching_kw_flag = false;
+    let mut input = String::new();
 
-    if confirm {
-        println!("\n  Importing file \"{}\" with keywords:", &title);
-        print!("\t");
-        io::stdout().flush().unwrap();
-    } else if !overwrite && file_already_exist {
-        println!("\n  File with matching keywords already exist!");
-        print!("    Keywords: ");
-        io::stdout().flush().unwrap();
-        matching_kw_flag = true;
+    if keywords.is_empty() {
+        return String::from("n");
     }
 
-    if confirm || (!overwrite && file_already_exist) {
+    if confirm {
+        print!("\n  Importing file \"{title}\" with keywords:\n\t");
         for keyword in &keywords {
             print!("\"{}\" ", keyword);
         }
+        if file_already_exist {
+            print!("\n  File with matching keywords already exist!");
+        }
         io::stdout().flush().unwrap();
-
         print!(
-            "{}\n:: {} file (y) OR edit keywords (e) [yeN]? ",
-            if !overwrite && file_already_exist && !matching_kw_flag {
-                "\n  File with matching keywords already exist!"
-            } else {
-                ""
-            },
-            if !overwrite && file_already_exist {
+            "\n:: {} file (y) OR edit keywords (e) [yeN]? ",
+            if file_already_exist {
                 "Overwrite"
             } else {
                 "Import"
             }
         );
         io::stdout().flush().unwrap();
-        input.clear();
         io::stdin().read_line(&mut input).expect("  Error reading!");
+    } else {
+        if !overwrite && file_already_exist {
+            print!("\n  File with matching keywords already exist!\n    Keywords: ");
+            for keyword in &keywords {
+                print!("\"{}\" ", keyword);
+            }
+            io::stdout().flush().unwrap();
+            print!("\n:: Overwrite file (y) OR edit keywords (e) [yeN]? ");
+            io::stdout().flush().unwrap();
+            io::stdin().read_line(&mut input).expect("  Error reading!");
+        }
     }
 
     input
