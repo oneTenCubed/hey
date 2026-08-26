@@ -18,12 +18,13 @@ pub fn help() {
     println!("\n  NOTE CREATION");
     println!("    . , --new [keywords...]\tAdd a new note (e.g. 'hey . rust macros')");
     println!("    Additional flags:");
-    println!("    \t\t-md\t\tCreated note will have markdown extension");
+    println!("    \t-md\t\t\tCreated note will have markdown extension");
 
     println!("\n  SEARCH");
     println!("    [keywords...]\t\tSearch for notes matching the given keywords (Shows prompt)");
     println!("    Additional flags:");
-    println!("    \t\t-s, --search\tDisables prompt");
+    println!("    \t-s, --search\t\tDisables prompt");
+    println!("    \t--all\t\t\tDisplay every matching results (Default top 10)");
 
     println!("\n  IMPORT");
     println!(
@@ -81,10 +82,13 @@ pub fn help_verbose() {
     println!("SEARCH");
     println!("    Any argument sequence not interpreted as an option");
     println!("    is treated as a search query. By default, enters");
-    println!("    into an interactive prompt.");
+    println!("    into an interactive prompt after displaying top");
+    println!("    10 results.");
     println!("        Additional flags:");
     println!("            -s, --search");
     println!("                Disables the interactive prompt.");
+    println!("            --all");
+    println!("                Displays all matching results.");
     println!();
     println!("    Search results are ranked according to the number");
     println!("    of matching title keywords.\n");

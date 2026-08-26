@@ -36,12 +36,9 @@ pub fn dispatcher() {
             "-i" | "--import" | "-ic" | "--import-confirm" => {
                 parse_import(args);
             }
-            "-s" | "--search" => {
+            "-s" | "--search" | "--all" => {
                 search_router(args);
             }
-            /*"-a" => {
-                todo!("Synonym/abbrevation searching coming soon!");
-            }*/
             _ => {
                 eprintln!("Invalid flag!\n");
                 docs::help();
@@ -176,9 +173,15 @@ fn parse_import(args: Vec<String>) {
 
 fn search_router(mut args: Vec<String>) {
     let mut interactive = true;
+    let mut display_all = false;
 
     args.sort();
-    if args[0].chars().nth(0) == Some('-') {
+    if args[0].as_str() == "--all" {
+        display_all = true;
+        args = args[1..].to_vec();
+    }
+
+    if args[0].chars().next() == Some('-') {
         if matches!(args[0].as_str(), "-s" | "--search") {
             args = args[1..].to_vec();
             interactive = false;
@@ -187,7 +190,10 @@ fn search_router(mut args: Vec<String>) {
 
     let search_string = args.join(" ");
 
-    let search_results = search::search(search_string);
+    let mut search_results = search::search(search_string);
+    if !display_all {
+        search_results = search_results[..10].to_vec();
+    }
 
     if interactive {
         cli::interactive_search_result(search_results);

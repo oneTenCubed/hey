@@ -29,7 +29,7 @@ pub fn non_interactive_search_result(result_arr: Vec<search::Field>) {
         println!("  Exactly one match found: {}", result_arr[0].display_name);
     } else {
         for (index, field) in result_arr.iter().enumerate() {
-            println!("  {}. {}", index + 1, field.display_name);
+            println!("{:4}. {}", index + 1, field.display_name);
         }
     }
 }
@@ -46,7 +46,7 @@ pub fn interactive_search_result(result_arr: Vec<search::Field>) {
         path_to_file = result_arr[0].file.clone();
     } else {
         for (index, field) in result_arr.iter().enumerate() {
-            println!("  {}. {}", index + 1, field.display_name);
+            println!("{:4}. {}", index + 1, field.display_name);
         }
 
         println!("");

@@ -127,7 +127,8 @@ Specify file name(s) after the import flag to import them else, scans the curren
 .SH SEARCH
 .PP
 Any argument sequence not interpreted as an option is treated as a
-search query.\& By default, enters interactive prompt.\&
+search query.\& By default, enters interactive prompt after 
+displaying top 10 results.\&
 .PP
 Example:
 .br
@@ -135,9 +136,13 @@ Example:
 .PP
 Additional flags:
 .br
-   -s, --search
+   \fB-s, --search\fR
 .br
        Disables interactive prompt
+.br
+   \fB--all\fR
+.br
+       Displays all matching results
 .PP
 Searches are currently performed against note titles only.\&
 .PP
