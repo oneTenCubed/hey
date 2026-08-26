@@ -5,7 +5,7 @@
 .nh
 .ad l
 .\" Begin generated content:
-.TH "hey" "1" "2026-07-12" "hey(1)" "Documentation Manual"
+.TH "hey" "1" "2026-08-26" "hey(1)" "Documentation Manual"
 .PP
 .SH NAME
 .PP
@@ -86,9 +86,11 @@ Display detailed documentation and exit.\&
 .PP
 Display version information and exit.\&
 .PP
-.SS ., --new [keywords...]
+.SS ., --new [keywords...] -md
 .PP
 Create a new note using the supplied keywords as its title.\&
+.br
+-md flag ensures that the created note is in markdown format.\&
 .PP
 Example:
 .br
@@ -125,11 +127,17 @@ Specify file name(s) after the import flag to import them else, scans the curren
 .SH SEARCH
 .PP
 Any argument sequence not interpreted as an option is treated as a
-search query.\&
+search query.\& By default, enters interactive prompt.\&
 .PP
 Example:
 .br
 	hey rust ownership
+.PP
+Additional flags:
+.br
+   -s, --search
+.br
+       Disables interactive prompt
 .PP
 Searches are currently performed against note titles only.\&
 .PP
@@ -149,6 +157,14 @@ Used when `HEY_EDITOR` is not set.\&
 .SS EDITOR
 .PP
 Used when neither `HEY_EDITOR` nor `VISUAL` are set.\&
+.PP
+.SS HEY_DEFAULT_EXT
+.PP
+Used to set the default extension for created notes.\&
+.br
+   Example usage:
+.br
+       HEY_DEFAULT_EXT=".\&md"
 .PP
 .SH EDITOR SELECTION
 .PP

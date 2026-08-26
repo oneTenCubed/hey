@@ -17,9 +17,13 @@ pub fn help() {
 
     println!("\n  NOTE CREATION");
     println!("    . , --new [keywords...]\tAdd a new note (e.g. 'hey . rust macros')");
+    println!("    Additional flags:");
+    println!("    \t\t-md\t\tCreated note will have markdown extension");
 
     println!("\n  SEARCH");
-    println!("    [keywords...]\t\tSearch for notes matching the given keywords");
+    println!("    [keywords...]\t\tSearch for notes matching the given keywords (Shows prompt)");
+    println!("    Additional flags:");
+    println!("    \t\t-s, --search\tDisables prompt");
 
     println!("\n  IMPORT");
     println!(
@@ -28,6 +32,7 @@ pub fn help() {
 
     println!("\n  ENVIRONMENT VARIABLE");
     println!("    HEY_EDITOR\t\t\tEditor command used by hey (overrides VISUAL and EDITOR)");
+    println!("    HEY_DEFAULT_EXT\t\tDefault extension to be set for created notes");
 
     println!("\n  EXAMPLES");
     println!("    hey . rust ownership");
@@ -67,11 +72,19 @@ pub fn help_verbose() {
     println!();
     println!("    ., --new [keywords...]");
     println!("        Create a new note using the supplied keywords");
-    println!("        as its title.\n");
+    println!("        as its title.");
+    println!("        Additional flags:");
+    println!("            -md");
+    println!("                Created notes will be set to have the");
+    println!("                markdown extension.\n");
 
     println!("SEARCH");
     println!("    Any argument sequence not interpreted as an option");
-    println!("    is treated as a search query.");
+    println!("    is treated as a search query. By default, enters");
+    println!("    into an interactive prompt.");
+    println!("        Additional flags:");
+    println!("            -s, --search");
+    println!("                Disables the interactive prompt.");
     println!();
     println!("    Search results are ranked according to the number");
     println!("    of matching title keywords.\n");
@@ -120,7 +133,13 @@ pub fn help_verbose() {
     println!();
     println!("    EDITOR");
     println!("        Used when neither HEY_EDITOR nor VISUAL");
-    println!("        are set.\n");
+    println!("        are set.");
+    println!();
+    println!("    HEY_DEFAULT_EXT");
+    println!("        Used to set the default extension for");
+    println!("        created notes.");
+    println!("            Example usage:");
+    println!("                HEY_DEFAULT_EXT=\".md\"\n");
 
     println!("EDITOR SELECTION");
     println!("    hey chooses an editor using the following order:");
