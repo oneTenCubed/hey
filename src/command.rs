@@ -16,14 +16,7 @@ pub fn dispatcher() {
     let args: Vec<String> = args[1..].to_vec();
 
     if args[0] == "." || args[0] == "--new" {
-        let title = if args.len() > 1 {
-            args[1..].join(" ")
-        } else {
-            cli::get_title()
-        };
-
-        storage::new_article(title); // TODO: support ".md" through -md
-    // TODO: add a flag to set markdown as default format
+        parse_new_article(args[1..].to_vec());
     } else if &'-'
         == match &args[0].chars().nth(0) {
             Some(val) => val,
@@ -57,6 +50,26 @@ pub fn dispatcher() {
     } else {
         search::search(args.join(" "));
     }
+}
+
+fn parse_new_article(mut args: Vec<String>) {
+    let mut extension = env::var("HEY_DEFAULT_EXT").unwrap_or(".txt".to_string());
+
+    args.sort();
+    if args[0].chars().nth(0) == Some('-') {
+        if args[0] == "-md".to_string() {
+            extension = ".md".to_string();
+        }
+        args = args[1..].to_vec();
+    }
+
+    let title = if args.len() > 0 {
+        args.join(" ")
+    } else {
+        cli::get_title()
+    };
+
+    storage::new_article(title, extension);
 }
 
 struct ImportArgs<'a> {

@@ -56,11 +56,11 @@ pub fn initialize_storage() {
     }
 }
 
-pub fn new_article(title: String) {
+pub fn new_article(title: String, extension: String) {
     let mut title: Vec<&str> = title.split(' ').collect();
     title.sort();
     let mut title: String = title.join("_");
-    title.push_str(".txt"); // TODO: also support md on request
+    title.push_str(extension.as_str());
 
     let path_to_file = get_hey_dir("notes").join(&title);
 
