@@ -1,5 +1,5 @@
 use crate::{app::fatal, cli, docs, import, search, storage};
-use std::{collections::HashSet, env};
+use std::{cmp, collections::HashSet, env};
 
 // TODO: add -n flag to limit search results (by default 10) and add --all to display all
 // add a default search result limit env variable
@@ -192,7 +192,7 @@ fn search_router(mut args: Vec<String>) {
 
     let mut search_results = search::search(search_string);
     if !display_all {
-        search_results = search_results[..10].to_vec();
+        search_results = search_results[..cmp::min(10, search_results.len())].to_vec();
     }
 
     if interactive {
