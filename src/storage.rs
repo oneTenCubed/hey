@@ -72,10 +72,7 @@ pub fn new_article(title: String, extension: String) {
         io::stdout().flush().unwrap();
         io::stdin().read_line(&mut input).expect("Error reading!");
 
-        open_editor_flag = match &(input.trim())[..] {
-            "n" | "N" | "q" | "Q" => false,
-            _ => true,
-        }
+        open_editor_flag = !matches!(input.trim(), "n" | "N" | "q" | "Q")
     }
 
     if open_editor_flag {

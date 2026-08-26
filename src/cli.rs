@@ -49,7 +49,7 @@ pub fn interactive_search_result(result_arr: Vec<search::Field>) {
             println!("{:4}. {}", index + 1, field.display_name);
         }
 
-        println!("");
+        println!();
         loop {
             print!(":: Enter file number to interact: ");
             io::stdout().flush().unwrap();
@@ -63,7 +63,7 @@ pub fn interactive_search_result(result_arr: Vec<search::Field>) {
             };
 
             input = input.trim().to_string();
-            if input == "" || input == "q" || input == "Q" {
+            if matches!(input.as_str(), "" | "q" | "Q") {
                 return;
             }
 
@@ -103,7 +103,7 @@ pub fn interactive_search_result(result_arr: Vec<search::Field>) {
     match input.trim() {
         "r" | "R" | "" => read_article(path_to_file),
         "w" | "W" => editor::open_editor(path_to_file),
-        "q" | "Q" => return,
+        "q" | "Q" => (),
         _ => println!("  Invalid input!"),
     }
 }

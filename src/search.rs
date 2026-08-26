@@ -44,7 +44,7 @@ pub fn search(s: String) -> Vec<Field> {
 
         result.push(Field {
             matches: count,
-            file: file,
+            file,
             display_name: title_tokens.join(" "),
         });
     }

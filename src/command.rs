@@ -18,7 +18,7 @@ pub fn dispatcher() {
     if args[0] == "." || args[0] == "--new" {
         parse_new_article(args[1..].to_vec());
     } else if &'-'
-        == match &args[0].chars().nth(0) {
+        == match &args[0].chars().next() {
             Some(val) => val,
             _ => &'+',
         }
@@ -53,14 +53,14 @@ fn parse_new_article(mut args: Vec<String>) {
     let mut extension = env::var("HEY_DEFAULT_EXT").unwrap_or(".txt".to_string());
 
     args.sort();
-    if args[0].chars().nth(0) == Some('-') {
-        if args[0] == "-md".to_string() {
+    if args[0].starts_with('-') {
+        if args[0] == "-md" {
             extension = ".md".to_string();
         }
         args = args[1..].to_vec();
     }
 
-    let title = if args.len() > 0 {
+    let title = if !args.is_empty() {
         args.join(" ")
     } else {
         cli::get_title()
@@ -109,45 +109,37 @@ fn parse_import(args: Vec<String>) {
         }
     }
 
-    match ignore_flag_index {
-        Some(index) => {
-            if args.len() <= index || args[index].chars().nth(0) == Some('-') {
-                eprintln!("Ignore field is empty. Nothing ignored...");
-                ()
-            }
-
-            for arg in &args[index..] {
-                if arg.chars().nth(0) == Some('-') {
-                    break;
-                }
-
-                state.ignore.insert(arg.to_string());
-            }
+    if let Some(index) = ignore_flag_index {
+        if args.len() <= index || args[index].starts_with('-') {
+            eprintln!("Ignore field is empty. Nothing ignored...");
         }
-        None => (),
+
+        for arg in &args[index..] {
+            if arg.starts_with('-') {
+                break;
+            }
+
+            state.ignore.insert(arg.to_string());
+        }
     }
 
-    match add_flag_index {
-        Some(index) => {
-            if args.len() <= index || args[index].chars().nth(0) == Some('-') {
-                eprintln!("Add field is empty. Nothing added...");
-                ()
-            }
-
-            for arg in &args[index..] {
-                if arg.chars().nth(0) == Some('-') {
-                    break;
-                }
-
-                state.add.insert(arg.to_string());
-            }
+    if let Some(index) = add_flag_index {
+        if args.len() <= index || args[index].starts_with('-') {
+            eprintln!("Add field is empty. Nothing added...");
         }
-        None => (),
+
+        for arg in &args[index..] {
+            if arg.starts_with('-') {
+                break;
+            }
+
+            state.add.insert(arg.to_string());
+        }
     }
 
-    if args.len() > 1 && args[1].chars().nth(0) != Some('-') {
+    if args.len() > 1 && !args[1].starts_with('-') {
         for arg in &args[1..] {
-            if arg.chars().nth(0) == Some('-') {
+            if arg.starts_with('-') {
                 break;
             }
 
@@ -181,11 +173,9 @@ fn search_router(mut args: Vec<String>) {
         args = args[1..].to_vec();
     }
 
-    if args[0].chars().next() == Some('-') {
-        if matches!(args[0].as_str(), "-s" | "--search") {
-            args = args[1..].to_vec();
-            interactive = false;
-        }
+    if args[0].starts_with('-') && matches!(args[0].as_str(), "-s" | "--search") {
+        args = args[1..].to_vec();
+        interactive = false;
     }
 
     let search_string = args.join(" ");

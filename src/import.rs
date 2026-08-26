@@ -54,7 +54,7 @@ pub fn import(
     let mut counter_pretty_print_new_line = confirm;
     for title in titles {
         let old_location = old_path.join(&title);
-        if !old_location.is_file() || title.chars().nth(0) == Some('.') {
+        if !old_location.is_file() || title.starts_with('.') {
             continue;
         }
 
@@ -150,7 +150,7 @@ fn tokenize(
 
     if add_before_ignore {
         for token in &add_tokens {
-            if let None = ignore_tokens.get(token.as_str()) {
+            if !ignore_tokens.contains(token.as_str()) {
                 tokens.insert(token.to_lowercase().to_string());
             }
         }
@@ -174,10 +174,10 @@ fn tokenize(
             }
         };
 
-        if let None = ignore_tokens.get(token) {
+        if !ignore_tokens.contains(token) {
             let token_split: Vec<&str> = token.split('_').collect();
             for token in token_split {
-                if let None = ignore_tokens.get(token) {
+                if !ignore_tokens.contains(token) {
                     tokens.insert(token.to_lowercase().to_string());
                 }
             }
@@ -214,8 +214,8 @@ fn get_new_title(
     new_title.push_str(new_title_tokens.as_str());
 
     let file = PathBuf::from(&title);
-    match file.extension() {
-        Some(extension) => match extension.to_str() {
+    if let Some(extension) = file.extension() {
+        match extension.to_str() {
             Some(string) => {
                 new_title.push('.');
                 new_title.push_str(string);
@@ -223,8 +223,7 @@ fn get_new_title(
             None => {
                 fatal("Invalid extension!");
             }
-        },
-        None => (),
+        }
     };
 
     new_title

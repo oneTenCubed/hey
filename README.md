@@ -224,7 +224,7 @@ alias name='$HOME/.cargo/bin/hey'
 
 ## Project Status
 
-Current version: 0.4.0
+Current version: 0.4.5
 
 hey is a personal project built as part of learning Rust, systems programming, and software architecture.
 
