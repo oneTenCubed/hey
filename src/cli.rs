@@ -5,7 +5,6 @@ use std::{
     path::PathBuf,
 };
 
-// TODO: Improve title acceptance logic, make a format for title: validate_title() -> String
 pub fn get_title() -> String {
     print!("  Enter a title: ");
     io::stdout().flush().unwrap();
