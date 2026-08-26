@@ -37,7 +37,7 @@ pub fn dispatcher() {
                 parse_import(args);
             }
             "-s" | "--search" => {
-                todo!("non-interactive search");
+                search_router(args);
             }
             /*"-a" => {
                 todo!("Synonym/abbrevation searching coming soon!");
@@ -48,7 +48,7 @@ pub fn dispatcher() {
             }
         }
     } else {
-        search::search(args.join(" "));
+        search_router(args);
     }
 }
 
@@ -172,4 +172,26 @@ fn parse_import(args: Vec<String>) {
         state.files,
         state.add_before_ignore,
     );
+}
+
+fn search_router(mut args: Vec<String>) {
+    let mut interactive = true;
+
+    args.sort();
+    if args[0].chars().nth(0) == Some('-') {
+        if matches!(args[0].as_str(), "-s" | "--search") {
+            args = args[1..].to_vec();
+            interactive = false;
+        }
+    }
+
+    let search_string = args.join(" ");
+
+    let search_results = search::search(search_string);
+
+    if interactive {
+        cli::interactive_search_result(search_results);
+    } else {
+        cli::non_interactive_search_result(search_results);
+    }
 }

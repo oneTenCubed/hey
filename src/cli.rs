@@ -22,9 +22,19 @@ pub fn get_title() -> String {
     title
 }
 
-// TODO: rename to interactive_search_result() and add another non_interactive_search_result() for
-// --search flag
-pub fn search_result(result_arr: Vec<search::Field>) {
+pub fn non_interactive_search_result(result_arr: Vec<search::Field>) {
+    if result_arr.is_empty() {
+        println!("  No matches!");
+    } else if result_arr.len() == 1 {
+        println!("  Exactly one match found: {}", result_arr[0].display_name);
+    } else {
+        for (index, field) in result_arr.iter().enumerate() {
+            println!("  {}. {}", index + 1, field.display_name);
+        }
+    }
+}
+
+pub fn interactive_search_result(result_arr: Vec<search::Field>) {
     let mut input = String::new();
     let path_to_file: PathBuf;
 

@@ -1,4 +1,4 @@
-use crate::{app::fatal, cli, storage};
+use crate::{app::fatal, storage};
 use std::path::PathBuf;
 
 #[derive(Clone)]
@@ -8,7 +8,7 @@ pub struct Field {
     pub display_name: String,
 }
 
-pub fn search(s: String) {
+pub fn search(s: String) -> Vec<Field> {
     let binding = s.to_lowercase();
     let search_tokens: Vec<&str> = binding.split(' ').collect();
 
@@ -76,5 +76,5 @@ pub fn search(s: String) {
         }
     }
 
-    cli::search_result(search_results);
+    search_results
 }
