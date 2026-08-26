@@ -1,8 +1,6 @@
 use crate::{app::fatal, cli, docs, import, search, storage};
 use std::{cmp, collections::HashSet, env};
 
-// TODO: add -n flag to limit search results (by default 10) and add --all to display all
-// add a default search result limit env variable
 pub fn dispatcher() {
     let args: Vec<String> = env::args().collect();
 
