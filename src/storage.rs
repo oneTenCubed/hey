@@ -1,5 +1,5 @@
 use crate::{app::fatal, editor};
-use dirs; // TODO: replace dirs, remove dependancy
+use dirs;
 use std::{
     fs::{self, DirBuilder},
     io::{self, Read, Write},
