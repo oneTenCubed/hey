@@ -51,7 +51,7 @@ fn parse_new_article(mut args: Vec<String>) {
     let mut extension = env::var("HEY_DEFAULT_EXT").unwrap_or(".txt".to_string());
 
     args.sort();
-    if args[0].starts_with('-') {
+    if !args.is_empty() && args[0].starts_with('-') {
         if args[0] == "-md" {
             extension = ".md".to_string();
         }
