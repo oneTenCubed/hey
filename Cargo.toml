@@ -1,6 +1,6 @@
 [package]
 name = "oneTenCubed-hey"
-version = "0.4.6"
+version = "0.5.0"
 edition = "2024"
 rust-version = "1.95"
 description = "keyword-based note retrieval tool"
@@ -10,6 +10,7 @@ license = "MIT"
 
 [dependencies]
 dirs = "6.0.0"
+libc = "0.2"
 
 [[bin]]
 name = "hey"

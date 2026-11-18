@@ -1,7 +1,7 @@
 use crate::{app::fatal, storage};
 use std::path::PathBuf;
 
-#[derive(Clone)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Field {
     pub matches: i32,
     pub file: PathBuf,

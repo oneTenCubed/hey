@@ -1,4 +1,4 @@
-use crate::{app::fatal, cli, docs, import, search, storage};
+use crate::{app::fatal, cli, docs, import, search, storage, tui};
 use std::{cmp, collections::HashSet, env};
 
 pub fn dispatcher() {
@@ -8,7 +8,11 @@ pub fn dispatcher() {
     // Maybe needed in the future, like warnings for using deprecated invoke commands
 
     if args.len() < 2 {
-        docs::help();
+        if cfg!(unix) {
+            tui::run();
+        } else {
+            docs::help();
+        }
         return;
     }
     let args: Vec<String> = args[1..].to_vec();

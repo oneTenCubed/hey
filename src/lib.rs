@@ -6,6 +6,8 @@ pub mod import;
 pub mod search;
 pub mod storage;
 
+pub mod tui;
+
 pub mod app {
     pub fn fatal(msg: &str) -> ! {
         eprintln!("{msg}");

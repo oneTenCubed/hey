@@ -57,9 +57,10 @@ dependencies = [
 
 [[package]]
 name = "oneTenCubed-hey"
-version = "0.4.6"
+version = "0.5.0"
 dependencies = [
  "dirs",
+ "libc",
 ]
 
 [[package]]
